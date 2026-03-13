@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE IDEA ENGINE — Creative Prompt Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #060608;
+    --deep: #0c0c12;
+    --surface: #111118;
+    --border: #1e1e2a;
+    --text: #e8e4dc;
+    --muted: #6a6880;
+    --accent-a: #c8ff47;
+    --accent-b: #ff4d6d;
+    --accent-c: #00d4ff;
+    --accent-d: #ff8c42;
+    --accent-e: #b47cff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* Header */
+  header {
+    padding: 60px 60px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: 'PROMPTS';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 200px;
+    color: var(--border);
+    letter-spacing: -10px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 4px;
+    line-height: 1;
+    z-index: 1;
+  }
+
+  .logo span {
+    color: var(--accent-a);
+  }
+
+  .header-meta {
+    text-align: right;
+    z-index: 1;
+  }
+
+  .header-meta p {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  /* Filter bar */
+  .filters {
+    padding: 20px 60px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-right: 12px;
+  }
+
+  .tag-pill {
+    padding: 4px 14px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .tag-pill:hover, .tag-pill.active {
+    color: var(--accent-a);
+    border-color: var(--accent-a);
+    background: rgba(200,255,71,0.05);
+  }
+
+  .tag-pill.all.active {
+    color: var(--black);
+    background: var(--accent-a);
+    border-color: var(--accent-a);
+  }
+
+  /* Grid */
+  .grid {
+    padding: 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 2px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 30px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--card-accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.25s ease;
+  }
+
+  .card:hover {
+    border-color: var(--card-accent);
+    transform: translateY(-2px);
+    z-index: 2;
+  }
+
+  .card:hover::before {
+    transform: scaleY(1);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+
+  .card-category {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    padding: 3px 8px;
+    border: 1px solid var(--card-accent);
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  .card-index {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--border);
+    letter-spacing: 1px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .card:hover .card-index {
+    color: var(--muted);
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .card-prompt {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(232,228,220,0.75);
+    line-height: 1.65;
+    margin-bottom: 18px;
+    letter-spacing: 0.2px;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .card-tag {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--deep);
+    border-radius: 1px;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-model {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    background: transparent;
+    border: 1px solid var(--card-accent);
+    padding: 4px 10px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+    border-radius: 1px;
+  }
+
+  .copy-btn:hover {
+    opacity: 1;
+    background: var(--card-accent);
+    color: var(--black);
+  }
+
+  .copy-btn.copied {
+    opacity: 1;
+    background: var(--card-accent);
+    color: var(--black);
+  }
+
+  /* Featured card */
+  .card.featured {
+    grid-column: span 2;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--deep) 100%);
+  }
+
+  .card.featured .card-prompt {
+    font-size: 16px;
+    columns: 2;
+    gap: 30px;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: var(--accent-a);
+    color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 5px 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 1000;
+    border-radius: 1px;
+  }
+
+  .tooltip.show { opacity: 1; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 40px;
+    padding: 16px 60px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent-a);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .card.hidden { display: none; }
+
+  /* Site Nav Link Elements */
+  .nav-back-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+    margin-bottom: 20px;
+  }
+  .nav-back-link:hover {
+    color: var(--accent-a);
+  }
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 900px) {
+    header { padding: 40px 24px 30px; }
+    .grid { padding: 24px; grid-template-columns: 1fr; }
+    .filters { padding: 16px 24px; }
+    .stats-bar { padding: 14px 24px; gap: 24px; }
+    .card.featured { grid-column: span 1; }
+    .card.featured .card-prompt { columns: 1; }
+    .logo { font-size: 48px; }
+  }
+  .donation-dock {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+  }
+  .buy-coffee-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--accent-a);
+    color: var(--black);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-family: 'DM Mono', monospace;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(200, 255, 71, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 100;
+  }
+  .stripe-btn {
+    background: #6772e5;
+    box-shadow: 0 4px 15px rgba(103, 114, 229, 0.3);
+    color: #fff;
+  }
+  .stripe-btn:hover {
+    background: #5469d4;
+    box-shadow: 0 6px 20px rgba(103, 114, 229, 0.5);
+  }
+  .buy-coffee-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(200, 255, 71, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="/" class="nav-back-link">← Back to Main Site</a>
+    <div class="logo">IDEA<span>ENGINE</span></div>
+    <p style="font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:8px;">Creative Prompt Library v1.0</p>
+  </div>
+  <div class="header-meta">
+    <p>Film · Story · Business</p>
+    <p>Creative · Short Video · Long Video</p>
+    <p style="margin-top:8px;color:var(--accent-a)">20 Prompts · 6 Categories</p>
+  </div>
+</header>
+
+<div class="filters">
+  <span class="filter-label">Filter ↗</span>
+  <button class="tag-pill all active" onclick="filterCards('all', this)">All</button>
+  <button class="tag-pill" onclick="filterCards('film', this)">Film Ideas</button>
+  <button class="tag-pill" onclick="filterCards('story', this)">Story Ideas</button>
+  <button class="tag-pill" onclick="filterCards('business', this)">Business Ideas</button>
+  <button class="tag-pill" onclick="filterCards('creative', this)">Creative Approaches</button>
+  <button class="tag-pill" onclick="filterCards('short', this)">Short Form Video</button>
+  <button class="tag-pill" onclick="filterCards('long', this)">Long Form Video</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-val">20</span><span class="stat-label">Prompts</span></div>
+  <div class="stat"><span class="stat-val">6</span><span class="stat-label">Categories</span></div>
+  <div class="stat"><span class="stat-val">3</span><span class="stat-label">Types</span></div>
+  <div class="stat"><span class="stat-val" id="copied-count">0</span><span class="stat-label">Copied</span></div>
+</div>
+
+<div class="tooltip" id="tooltip">COPIED</div>
+
+<script>
+const prompts = [
+  {
+    "id": 1,
+    "title": "The Ecstasy Gospel",
+    "category": "film",
+    "label": "FILM",
+    "accent": "#d4820a",
+    "prompt": "An angel falls onto a Liverpool housing estate in 1992 and quietly saves broken people while losing herself to rave culture.\n\nWrite a feature film about a supernatural being who arrives in working-class Northern England during the height of the rave era. She has no language for what she is. Explore how joy, community, and chemical euphoria mirror spiritual transcendence. Tone: Ken Loach meets Terrence Malick.",
+    "tags": [
+      "Feature",
+      "Drama",
+      "Supernatural",
+      "90s"
+    ],
+    "model": "Feature"
+  },
+  {
+    "id": 2,
+    "title": "The Carrier",
+    "category": "film",
+    "label": "FILM",
+    "accent": "#d4820a",
+    "prompt": "A night-shift courier discovers every package he delivers contains a secret that changes the recipient's life.\n\nDevelop a no-budget short film set across one night in a post-industrial city. The protagonist is invisible \u2014 a delivery driver who witnesses transformation in others but never his own. Use architecture and fluorescent light as metaphor. Think Dardenne Brothers stripped to 12 minutes.",
+    "tags": [
+      "Short",
+      "No-Budget",
+      "Social Realism"
+    ],
+    "model": "Short"
+  },
+  {
+    "id": 3,
+    "title": "Signal / Noise",
+    "category": "film",
+    "label": "FILM",
+    "accent": "#d4820a",
+    "prompt": "A longitudinal documentary about young musicians navigating digital distribution, streaming economics, and identity loss.\n\nOutline a documentary film following three emerging UK artists across 18 months. Explore the tension between creative authenticity and platform optimisation. Integrate archival urban music footage with present-day interviews. Structure as three interwoven diaries. Access-led, observational style.",
+    "tags": [
+      "Documentary",
+      "Music",
+      "UK",
+      "Longitudinal"
+    ],
+    "model": "Documentary"
+  },
+  {
+    "id": 4,
+    "title": "Archive Fever",
+    "category": "film",
+    "label": "FILM",
+    "accent": "#d4820a",
+    "prompt": "A museum curator begins to believe the 3D scans of historical objects contain trapped consciousness.\n\nWrite a hybrid narrative-documentary film exploring the ethics of digital preservation and cultural memory. Blend talking-head interviews with archivists and speculative fiction sequences. The protagonist is a digital fabrication artist working on a slavery memorial who starts hearing voices in the scan data.",
+    "tags": [
+      "Hybrid",
+      "Archive",
+      "Speculative",
+      "3D"
+    ],
+    "model": "Hybrid"
+  },
+  {
+    "id": 5,
+    "title": "Estate Geometry",
+    "category": "film",
+    "label": "FILM",
+    "accent": "#d4820a",
+    "prompt": "A 360\u00b0 VR film placing the viewer inside a brutalist housing estate as it shifts between 1972, 1992 and 2024.\n\nDesign an immersive VR film experience for a heritage institution. The viewer inhabits the same physical space across three time periods. Sound design carries narrative continuity while visuals transform. Research methodology: oral histories, photogrammetric scans, archival footage composited into volumetric scenes.",
+    "tags": [
+      "VR",
+      "360\u00b0",
+      "Heritage",
+      "Immersive"
+    ],
+    "model": "Immersive"
+  },
+  {
+    "id": 6,
+    "title": "Night School",
+    "category": "film",
+    "label": "FILM",
+    "accent": "#d4820a",
+    "prompt": "Six young people who have never met attend the same adult education class \u2014 and slowly reveal what brought them there.\n\nDevelop a micro-budget ensemble film set entirely within one classroom over six weeks. Each character represents a different route out of NEET status. Naturalistic dialogue, non-professional cast, available light. Inspired by Mike Leigh's improvisational development process. Strong on class, ambition, and failure.",
+    "tags": [
+      "Ensemble",
+      "Micro-Budget",
+      "NEET",
+      "Social"
+    ],
+    "model": "Micro-Budget"
+  },
+  {
+    "id": 1,
+    "title": "Ghost Frequency",
+    "category": "story",
+    "label": "STORY",
+    "accent": "#c0392b",
+    "prompt": "A reclusive singer-songwriter discovers his unreleased recordings are being played on a pirate radio station by someone who shouldn't know they exist.\n\nWrite the opening chapter of a literary novel about a fragile male artist who has retreated from public life. He hears his own voice on the radio \u2014 songs he never released. The mystery pulls him back into the city and a past he buried. Tone: melancholy, precise, British indie fiction. Think Nick Hornby meets Patrick Keiller.",
+    "tags": [
+      "Novel",
+      "Music",
+      "Mystery",
+      "British"
+    ],
+    "model": "Novel"
+  },
+  {
+    "id": 2,
+    "title": "The Guarantee",
+    "category": "story",
+    "label": "STORY",
+    "accent": "#c0392b",
+    "prompt": "A civil servant tasked with rolling out the UK Youth Guarantee programme discovers the system is actively fighting against the young people it claims to help.\n\nDevelop a 6-episode TV drama series following a DWP programme manager during the launch of a flagship youth employment scheme. Each episode follows one young NEET person. The bureaucracy is both antagonist and dark comedy. Tone: The Thick of It meets I, Daniel Blake. Contemporary, political, urgent.",
+    "tags": [
+      "TV Drama",
+      "Series",
+      "Political",
+      "NEET"
+    ],
+    "model": "Script Series"
+  },
+  {
+    "id": 3,
+    "title": "The Scan",
+    "category": "story",
+    "label": "STORY",
+    "accent": "#c0392b",
+    "prompt": "A photogrammetry technician 3D scanning a decommissioned prison accidentally captures the memory of every person who ever passed through it.\n\nWrite a speculative fiction short story in which digital scanning technology becomes a vessel for collective trauma and memory. The protagonist is a creative technologist hired to produce a heritage model. Themes: incarceration, colonial legacy, the ethics of preservation. Approx. 4,000 words, first person, present tense.",
+    "tags": [
+      "Speculative",
+      "Short Story",
+      "Heritage",
+      "3D"
+    ],
+    "model": "Speculative"
+  },
+  {
+    "id": 4,
+    "title": "Level Up",
+    "category": "story",
+    "label": "STORY",
+    "accent": "#c0392b",
+    "prompt": "A 17-year-old who has never left his estate discovers he has an extraordinary gift for game design \u2014 but the industry wants to own him.\n\nOutline a YA novel about a young person from a deprived Northern English background who becomes a viral game developer overnight. Explore class, creative ownership, mental health, and the ethics of the games industry. Include a neurodiverse protagonist. Positive in spirit but unflinching about structural barriers.",
+    "tags": [
+      "YA",
+      "Games",
+      "Class",
+      "Neurodiversity"
+    ],
+    "model": "YA Novel"
+  },
+  {
+    "id": 5,
+    "title": "Frequency",
+    "category": "story",
+    "label": "STORY",
+    "accent": "#c0392b",
+    "prompt": "A BBC Radio 1 presenter in 1993 realises the pirate station she's been secretly listening to is broadcasting from the future.\n\nWrite a 6-part audio drama script for BBC Sounds. The protagonist is a female radio presenter navigating the tension between mainstream music industry and underground rave culture. The conceit: a pirate station transmitting prophetic signals. Rich use of music, sound design, and British vernacular. Approx. 25 minutes per episode.",
+    "tags": [
+      "Audio Drama",
+      "Radio",
+      "90s",
+      "Sci-Fi"
+    ],
+    "model": "Audio Drama"
+  },
+  {
+    "id": 6,
+    "title": "Hands",
+    "category": "story",
+    "label": "STORY",
+    "accent": "#c0392b",
+    "prompt": "A visual narrative tracing the journey of a single pair of hands through 300 years of Atlantic history \u2014 enslaved, liberated, working, creating.\n\nDevelop a graphic novel concept using hands as the continuous visual motif across a multi-generational story of slavery, migration, and creative resistance. Each chapter covers a different era. No faces shown \u2014 only hands, objects, environments. Companion to a museum installation. Stark, political, luminous.",
+    "tags": [
+      "Graphic Novel",
+      "History",
+      "Memorial",
+      "Visual"
+    ],
+    "model": "Graphic Novel"
+  },
+  {
+    "id": 1,
+    "title": "ScanForge Pro",
+    "category": "business",
+    "label": "BUSINESS",
+    "accent": "#1a4a7a",
+    "prompt": "A mobile-first 3D scanning and asset management platform for creative professionals and heritage institutions.\n\nWrite a business pitch for a B2B SaaS platform that makes photogrammetric 3D scanning accessible to non-technical creative professionals. Target markets: museums, film production, architecture, education. Core differentiator: AI-assisted clean-up and instant web/XR export. Include pricing tiers, go-to-market strategy, and Year 1 revenue model.",
+    "tags": [
+      "SaaS",
+      "3D",
+      "Heritage",
+      "B2B"
+    ],
+    "model": "Platform"
+  },
+  {
+    "id": 2,
+    "title": "Pathway",
+    "category": "business",
+    "label": "BUSINESS",
+    "accent": "#1a4a7a",
+    "prompt": "A NEET-focused mobile app connecting young people aged 16\u201324 to employment, education, and creative opportunities with zero bureaucracy.\n\nDevelop a full product strategy for a UK government-endorsed app targeting NEET young people. The interface must be accessible, jargon-free, and built around earned trust rather than surveillance. Include gamification of skill progression, peer mentoring, and integration with DWP and Youth Guarantee trailblazers. Define KPIs and impact metrics.",
+    "tags": [
+      "App",
+      "EdTech",
+      "Gov",
+      "Social Impact"
+    ],
+    "model": "App"
+  },
+  {
+    "id": 3,
+    "title": "Awork Creative Studio",
+    "category": "business",
+    "label": "BUSINESS",
+    "accent": "#1a4a7a",
+    "prompt": "A Liverpool-based creative technology studio specialising in immersive experiences, community engagement, and film production for cultural institutions.\n\nWrite a credentials deck and positioning strategy for a boutique creative studio combining film production, 3D fabrication, immersive arts, and community engagement. Target clients: Arts Council funded organisations, local authorities, heritage bodies, brands with social responsibility agendas. Unique selling point: integrated practice across physical and digital realms.",
+    "tags": [
+      "Agency",
+      "Creative Tech",
+      "Liverpool",
+      "Culture"
+    ],
+    "model": "Agency"
+  },
+  {
+    "id": 4,
+    "title": "ImmersiveEDU",
+    "category": "business",
+    "label": "BUSINESS",
+    "accent": "#1a4a7a",
+    "prompt": "A curriculum-linked XR learning platform bringing VR and mixed reality into UK secondary schools with no hardware requirement.\n\nDesign a business model for a WebXR educational platform accessible via browser on any device. Focus on games design, creative technology, and digital arts curriculum. Teacher dashboard, student portfolio tracking, and AI-assisted lesson adaptation. Partnership model with schools, MATs, and awarding bodies. Pitch deck structure with financial projections.",
+    "tags": [
+      "XR",
+      "EdTech",
+      "Schools",
+      "WebXR"
+    ],
+    "model": "EdTech"
+  },
+  {
+    "id": 5,
+    "title": "GRACE \u2014 The Franchise",
+    "category": "business",
+    "label": "BUSINESS",
+    "accent": "#1a4a7a",
+    "prompt": "A transmedia IP built around the GRACE story world: feature film, graphic novel, immersive experience, game, and soundtrack.\n\nDevelop a transmedia franchise strategy for an original IP set in 1990s Liverpool. Map the story world across: theatrical feature film, graphic novel prequel, VR experience for museum installation, mobile narrative game, and original vinyl soundtrack. Define rights structure, development phases, and funding pathways from BFI through to private equity.",
+    "tags": [
+      "IP",
+      "Transmedia",
+      "BFI",
+      "Franchise"
+    ],
+    "model": "IP"
+  },
+  {
+    "id": 6,
+    "title": "Access by Design",
+    "category": "business",
+    "label": "BUSINESS",
+    "accent": "#1a4a7a",
+    "prompt": "A consultancy embedding accessibility and inclusive design into creative technology products from day one rather than as afterthought.\n\nWrite a service offering and go-to-market plan for an accessibility consultancy focused on digital arts, games, and immersive media. Services: audit and certification, co-design with neurodivergent users, accessible 3D asset production, SEN-informed UX strategy. Clients: games studios, cultural institutions, local government. Differentiate through lived experience and community co-production.",
+    "tags": [
+      "Consultancy",
+      "Accessibility",
+      "SEN",
+      "Inclusive"
+    ],
+    "model": "Consultancy"
+  },
+  {
+    "id": 1,
+    "title": "60 Second Worlds",
+    "category": "short form",
+    "label": "SHORT FORM",
+    "accent": "#ffffff",
+    "prompt": "A vertical video series where each episode builds a complete world \u2014 character, conflict, resolution \u2014 in exactly 60 seconds.\n\nDesign a short-form video series concept for Instagram Reels and TikTok. Each episode is exactly 60 seconds. One location, one character, one turning point. The constraint IS the creativity. Develop 10 episode concepts, a visual identity, hook-first edit structure, and a content calendar. Target: creative, film-literate 18\u201335 audience. No dialogue permitted \u2014 story through action and sound only.",
+    "tags": [
+      "Reels",
+      "TikTok",
+      "Series",
+      "Silent"
+    ],
+    "model": "Series"
+  },
+  {
+    "id": 2,
+    "title": "Thirty-Second Theory",
+    "category": "short form",
+    "label": "SHORT FORM",
+    "accent": "#ffffff",
+    "prompt": "Demystifying complex film and games theory for young creative students in under 30 seconds per concept.\n\nCreate a short-form educational content strategy for a games design or film studies lecturer. Each video explains one theory or concept in 30 seconds using visual metaphors and no academic jargon. Develop 20 concepts (e.g. mise-en-sc\u00e8ne, ludonarrative dissonance, the male gaze, emergent gameplay). Include hook line, core explanation, and one memorable example per concept. Platform: YouTube Shorts + TikTok.",
+    "tags": [
+      "Educational",
+      "Shorts",
+      "Film Theory",
+      "Games"
+    ],
+    "model": "Educational"
+  },
+  {
+    "id": 3,
+    "title": "My Estate in Three Objects",
+    "category": "short form",
+    "label": "SHORT FORM",
+    "accent": "#ffffff",
+    "prompt": "A participatory video series where residents of a single postcode film three objects that define their relationship with where they live.\n\nDesign a community-led UGC video series for a cultural institution or local authority. Participants film three objects from their home or neighbourhood with a voiceover. Aggregate into a portrait of a place. Develop the brief, facilitation pack, technical instructions for non-filmmakers, moderation strategy, and exhibition format. Output: social media series + installation.",
+    "tags": [
+      "UGC",
+      "Community",
+      "Participatory",
+      "Place"
+    ],
+    "model": "Community"
+  },
+  {
+    "id": 4,
+    "title": "Making the Invisible",
+    "category": "short form",
+    "label": "SHORT FORM",
+    "accent": "#ffffff",
+    "prompt": "A personal creative practice channel showing the process and thinking behind physical/digital hybrid artworks in real time.\n\nDevelop a personal brand content strategy for a creative technologist and artist. The series pulls back the curtain on how physical objects (cast iron, 3D prints) and digital counterparts (WebGL, VR) are conceived and made. One video per project phase: concept sketch, fabrication, failure, final reveal. Tone: thoughtful, non-performative, DIY intellectual. Platform: YouTube + LinkedIn + Instagram.",
+    "tags": [
+      "Personal Brand",
+      "Process",
+      "Art",
+      "BTS"
+    ],
+    "model": "Personal Brand"
+  },
+  {
+    "id": 5,
+    "title": "One Minute Places",
+    "category": "short form",
+    "label": "SHORT FORM",
+    "accent": "#ffffff",
+    "prompt": "Hyper-compressed portrait documentaries \u2014 one person, one place, one minute \u2014 capturing what usually takes an hour to convey.\n\nDesign a short-form documentary format that captures the essence of a person and place in exactly 60 seconds. Develop interview technique, visual grammar, and edit structure for compressing documentary truth. Produce a pitch for 20 episodes across five UK cities. Suitable as a commission pitch for BBC Sounds or Channel 4 social. Include accessibility captions as visual storytelling device.",
+    "tags": [
+      "Doc",
+      "BBC",
+      "Portrait",
+      "60s"
+    ],
+    "model": "Documentary"
+  },
+  {
+    "id": 6,
+    "title": "Scan Portraits",
+    "category": "short form",
+    "label": "SHORT FORM",
+    "accent": "#ffffff",
+    "prompt": "A vertical video art series using 3D photogrammetric scans of people, rendered and animated in real time as they speak.\n\nDevelop a short-form experimental video series combining 3D scanning technology with intimate documentary interview. Subjects are scanned while speaking \u2014 the resulting point cloud or mesh becomes the visual treatment. Their words are heard but their image dissolves into data. Explore the tension between presence and representation. Exhibition context: gallery + social media simultaneously.",
+    "tags": [
+      "Experimental",
+      "Scan",
+      "Portrait",
+      "Art"
+    ],
+    "model": "Experimental"
+  },
+  {
+    "id": 1,
+    "title": "What the City Remembers",
+    "category": "long form",
+    "label": "LONG FORM",
+    "accent": "#ffffff",
+    "prompt": "A 45-minute essay film exploring how post-industrial British cities store and delete memory through architecture, sound, and the people who remain.\n\nWrite a treatment for a personal essay film in the tradition of Chris Marker and Patrick Keiller. The filmmaker walks through a post-industrial Northern English city over one year. Voiceover in the style of literary non-fiction. Subject: how cities encode and erase working-class cultural memory. Include structural breakdown, cinematographic approach, and funding pathway (BFI Doc Society, Arts Council).",
+    "tags": [
+      "Essay Film",
+      "45 min",
+      "BFI",
+      "Memory"
+    ],
+    "model": "Essay Film"
+  },
+  {
+    "id": 2,
+    "title": "The Makers",
+    "category": "long form",
+    "label": "LONG FORM",
+    "accent": "#ffffff",
+    "prompt": "A 6-part observational documentary series profiling creative technologists working at the intersection of digital and physical making in the North of England.\n\nDevelop a documentary series concept for BBC Four or Channel 4. Six 30-minute episodes, each profiling one creative practitioner \u2014 a 3D fabricator, a community filmmaker, a games designer, an accessibility technologist, a sound artist, a heritage curator. Explore class and creativity, craft and code, locality and global reach. Access-led, non-hierarchical editorial approach.",
+    "tags": [
+      "Series",
+      "BBC Four",
+      "Observational",
+      "North"
+    ],
+    "model": "Documentary Series"
+  },
+  {
+    "id": 3,
+    "title": "Acid House Nation",
+    "category": "long form",
+    "label": "LONG FORM",
+    "accent": "#ffffff",
+    "prompt": "A feature documentary reexamining the UK rave era not through music journalism but through the lens of class mobility, mental health, and spiritual hunger.\n\nWrite a feature documentary treatment (90 minutes) about the UK rave era of 1988\u20131995 as a mass working-class spiritual movement. Interview subjects: participants now in their 50s, cultural historians, psychologists, former ravers who are now religious. Use archival footage, present-day returns to locations, and contemporary neuroscience of euphoria. Tone: serious, empathetic, revelatory. Avoid nostalgia trap.",
+    "tags": [
+      "Feature Doc",
+      "90 min",
+      "Rave",
+      "Class"
+    ],
+    "model": "Feature Doc"
+  },
+  {
+    "id": 4,
+    "title": "The Deep Dive",
+    "category": "long form",
+    "label": "LONG FORM",
+    "accent": "#ffffff",
+    "prompt": "Long-form YouTube essays on the intersection of games design, film theory, and cultural criticism \u2014 each episode 20\u201345 minutes.\n\nDesign a long-form YouTube essay channel strategy for a games design and film academic. Each episode is a deep critical analysis of one game or film using interdisciplinary theory. Target: intelligent 25\u201340 audience. Include channel positioning, episode structure template, SEO metadata strategy, thumbnail and titles approach, and a 12-episode roadmap. Tone: rigorous but accessible, personal but argued.",
+    "tags": [
+      "YouTube",
+      "Essay",
+      "Games",
+      "Film Theory"
+    ],
+    "model": "YouTube Series"
+  },
+  {
+    "id": 5,
+    "title": "The Museum of What Happened",
+    "category": "long form",
+    "label": "LONG FORM",
+    "accent": "#ffffff",
+    "prompt": "A 60-minute immersive documentary experience combining flat screen, 360\u00b0 VR, and physical installation for museum audiences.\n\nWrite a production brief for a multi-platform documentary experience commissioned by a heritage institution. The work exists simultaneously as a 60-minute linear cut, a 360\u00b0 VR version, and a physical touchable installation. Subject: the Atlantic slave trade as experienced through everyday domestic objects. Co-produced with community and descendant groups. Accessibility-first design throughout. Budget framework: \u00a3150,000\u2013\u00a3250,000.",
+    "tags": [
+      "Immersive",
+      "VR",
+      "Museum",
+      "Heritage"
+    ],
+    "model": "Immersive Doc"
+  },
+  {
+    "id": 6,
+    "title": "The Practitioner Lectures",
+    "category": "long form",
+    "label": "LONG FORM",
+    "accent": "#ffffff",
+    "prompt": "A recorded lecture series where creative technologists share practice-based research with honesty about failure, process, and what the institutions don't teach.\n\nDevelop a long-form video lecture series concept for a higher education institution or independent platform. Each 40-minute episode features one creative practitioner presenting a project honestly \u2014 including failure, budget reality, and what they'd do differently. Target: HE students, early-career practitioners. Companion resources: transcripts, reading lists, studio visits. Distribute via institutional YouTube and open access platform.",
+    "tags": [
+      "HE",
+      "Lecture",
+      "Practice-Based",
+      "Open Access"
+    ],
+    "model": "Lecture Series"
+  },
+  {
+    "id": 1,
+    "title": "The ACE Project Grant",
+    "category": "arts funding",
+    "label": "ARTS FUNDING",
+    "accent": "#ffffff",
+    "prompt": "Structuring a compelling Arts Council England National Lottery Project Grant application for a community-facing creative technology project.\n\nWrite a full Arts Council England National Lottery Project Grant application for a creative technology project that combines 3D fabrication, community co-production, and digital access. Address all ACE quality principles: ambition, relevance, reach and engagement, leadership and management, public funds. Include a clear activity plan, artist fees at recommended rates, evaluation methodology, and a case for how the project reaches underrepresented communities. Budget range: \u00a315,000\u2013\u00a330,000. Tone: evidence-led, specific, non-jargon.",
+    "tags": [
+      "ACE",
+      "Project Grant",
+      "Community",
+      "Digital"
+    ],
+    "model": "Application"
+  },
+  {
+    "id": 2,
+    "title": "The Artist Residency Bid",
+    "category": "arts funding",
+    "label": "ARTS FUNDING",
+    "accent": "#ffffff",
+    "prompt": "Pitching for a paid artist residency at a heritage institution, museum, or university \u2014 positioning practice-based research as the core value exchange.\n\nWrite a residency proposal for a creative technologist and interdisciplinary artist applying to a museum, heritage body, or university. Define the research question, the outputs (physical, digital, community), the skills and knowledge you bring, and what you need from the host institution. Include a timeline across 3\u20136 months, public engagement activities, documentation strategy, and how the residency advances both your practice and the institution's mission. Reference relevant precedents in practice-based research.",
+    "tags": [
+      "Residency",
+      "Museum",
+      "Research",
+      "Heritage"
+    ],
+    "model": "Residency"
+  },
+  {
+    "id": 3,
+    "title": "The Public Commission Tender",
+    "category": "arts funding",
+    "label": "ARTS FUNDING",
+    "accent": "#ffffff",
+    "prompt": "Responding to a public art commission brief for a permanent or semi-permanent work in a civic or heritage space.\n\nWrite a tender response for a public art commission for a civic building, museum atrium, or heritage site. The proposed work combines cast or fabricated physical elements with a digital interactive layer accessible via QR or NFC. Address: artistic concept and how it responds to place, materials and fabrication process, community consultation methodology, installation plan, maintenance and longevity considerations, and artist fees and project costs. Include a compelling artist statement that positions the work within a broader cultural discourse on memory and place.",
+    "tags": [
+      "Commission",
+      "Public Art",
+      "Civic",
+      "Permanent"
+    ],
+    "model": "Commission"
+  },
+  {
+    "id": 4,
+    "title": "The Portfolio Funding Map",
+    "category": "arts funding",
+    "label": "ARTS FUNDING",
+    "accent": "#ffffff",
+    "prompt": "Mapping an integrated 3-year funding strategy across multiple income streams for a freelance artist and creative technologist.\n\nDevelop a 3-year funding and income diversification strategy for a freelance creative technologist and artist with an established practice. Map across: Arts Council grants, BFI development funds, Innovate UK, local authority cultural budgets, HE CPD contracts, corporate commissions (Google, Adobe, HSBC), residency fees, and IP/rights income. For each stream define: eligibility criteria, application timeline, realistic income potential, and capacity cost. Include a cash flow model and a risk register for funding dependency.",
+    "tags": [
+      "Strategy",
+      "3-Year",
+      "Income",
+      "BFI"
+    ],
+    "model": "Strategy"
+  },
+  {
+    "id": 5,
+    "title": "The Impact Report",
+    "category": "arts funding",
+    "label": "ARTS FUNDING",
+    "accent": "#ffffff",
+    "prompt": "Writing an honest, evidence-rich impact report for a completed arts project that satisfies funders and positions the artist for the next bid.\n\nWrite an impact report template and methodology for a community arts project funded by Arts Council England, a local authority, or a charitable trust. Structure: executive summary, project overview, activity delivered vs. planned, quantitative outputs (participants, sessions, reach), qualitative outcomes (testimonies, case studies, observed change), financial accountability, lessons learned, and next steps. Include a framework for gathering participant data ethically, a photography and documentation strategy, and language that converts impact into evidence for future funding applications.",
+    "tags": [
+      "Impact",
+      "Evaluation",
+      "ACE",
+      "Evidence"
+    ],
+    "model": "Impact"
+  },
+  {
+    "id": 6,
+    "title": "The Cultural Body Pitch",
+    "category": "arts funding",
+    "label": "ARTS FUNDING",
+    "accent": "#ffffff",
+    "prompt": "Pitching a speculative creative project to a cultural body, trust, or foundation before a formal application exists \u2014 building the relationship first.\n\nWrite a speculative project pitch letter and one-page proposal for an unsolicited approach to a cultural trust, arts foundation, or museum development department. The pitch introduces a creative technologist's practice, proposes a specific project tailored to the institution's stated strategic priorities, and requests a development conversation rather than immediate funding. Include: a compelling opening that hooks the reader in two sentences, a clear project concept with deliverables, why this institution specifically, the artist's relevant credentials, and a proposed next step. Tone: confident, specific, not sycophantic.",
+    "tags": [
+      "Pitch",
+      "Speculative",
+      "Trust",
+      "Development"
+    ],
+    "model": "Pitch"
+  },
+  {
+    "id": 1,
+    "title": "The Archive Loop",
+    "category": "creative",
+    "label": "APPROACH",
+    "accent": "#2a6045",
+    "prompt": "Using community archival material as both research input and finished aesthetic output in the same project.\n\nDescribe a creative methodology that treats found archival materials \u2014 photographs, audio, objects, oral histories \u2014 as raw creative material rather than reference only. Develop a workflow where the archive IS the film, not the backdrop to it. Include practical steps for community co-production, rights clearance strategies, and aesthetic frameworks for integrating lo-fi archival textures with contemporary production.",
+    "tags": [
+      "Archive",
+      "Community",
+      "Co-Production",
+      "Method"
+    ],
+    "model": "Process"
+  },
+  {
+    "id": 2,
+    "title": "Tactile Storyboarding",
+    "category": "creative",
+    "label": "APPROACH",
+    "accent": "#2a6045",
+    "prompt": "Using 3D-printed physical models of key scenes as pre-visualisation tools rather than drawn storyboards.\n\nDesign a pre-production methodology using 3D-printed miniature environments and figures as physical storyboarding tools. Explore how tactile engagement changes creative decisions vs. 2D boards. Include workflow: concept sketch -> OpenSCAD/Blender model -> print -> iterate -> photograph for board. Applications for accessible filmmaking with neurodivergent collaborators.",
+    "tags": [
+      "3D Print",
+      "Pre-Vis",
+      "Accessibility",
+      "Physical"
+    ],
+    "model": "Technique"
+  },
+  {
+    "id": 3,
+    "title": "The Five Senses Draft",
+    "category": "creative",
+    "label": "APPROACH",
+    "accent": "#2a6045",
+    "prompt": "A screenwriting technique that forces each scene to be written through a different sensory lens before a word of dialogue is added.\n\nDevelop a screenwriting workshop framework built around sensory-first scene development. Before any dialogue, writers must draft each scene five times: what is seen, heard, touched, smelled, tasted. Only after all five drafts does dialogue emerge. Describe the methodology, facilitation approach, and how it unlocks non-verbal storytelling. Include exercises for each sense.",
+    "tags": [
+      "Screenwriting",
+      "Workshop",
+      "Sensory",
+      "Framework"
+    ],
+    "model": "Framework"
+  },
+  {
+    "id": 4,
+    "title": "Scan & Story",
+    "category": "creative",
+    "label": "APPROACH",
+    "accent": "#2a6045",
+    "prompt": "Merging rapid environmental photogrammetry with location scouting to write site-specific narrative directly into the 3D space.\n\nOutline an approach that disrupts the traditional location scout. Step 1: LIDAR scan/photogrammatry a derelict or charged location. Step 2: Import mesh to Unreal or Unity. Step 3: Write the scene while navigating the digital twin in VR. How does understanding the exact spatial constraints before writing change the rhythm and action of the scene?",
+    "tags": [
+      "VR",
+      "Photogrammetry",
+      "Location",
+      "Spatial"
+    ],
+    "model": "Workflow"
+  },
+  {
+    "id": 5,
+    "title": "Constraint as Engine",
+    "category": "creative",
+    "label": "APPROACH",
+    "accent": "#2a6045",
+    "prompt": "Designing hyper-restrictive rulesets (e.g. Dogme 95 for the TikTok era) to force innovation rather than rely on budget.\n\nFormulate a new cinematic manifesto for micro-budget creators. Establish 10 unbreakable rules regarding lighting (none added), sound (diegetic only), casting (strangers only), and runtime (real-time only). Provide a philosophical justification for each rule and predict the aesthetic accidents they will generate. How do limitations become style?",
+    "tags": [
+      "Manifesto",
+      "Rules",
+      "Dogme",
+      "Aesthetic"
+    ],
+    "model": "Manifesto"
+  },
+  {
+    "id": 6,
+    "title": "Sonic First Design",
+    "category": "creative",
+    "label": "APPROACH",
+    "accent": "#2a6045",
+    "prompt": "Inverting the post-production pipeline: composing the score and sound design before shooting any footage.\n\nDocument a production pipeline where the composer is hired before the cinematographer. The score is recorded based on the script, and the film is shot strictly to match the rhythm, stems, and emotional peaks of the pre-recorded audio track. What changes on set when the camera must serve the sound, rather than the sound serving the cutting room?",
+    "tags": [
+      "Sound",
+      "Music",
+      "Pipeline",
+      "Subversion"
+    ],
+    "model": "Pipeline"
+  },
+  {
+    "id": 1,
+    "title": "The Ghost Cut",
+    "category": "short",
+    "label": "SHORT FORM",
+    "accent": "#5c3d82",
+    "prompt": "A 60-second vertical film exploring urban decay using only match cuts between 1980s archival footage and present-day iPhone scans.\n\nWrite a shot-list and rhythmic editing structure for a one-minute TikTok/Reel. The core visual hook is the 'Ghost Cut'\u2014matching the geometry of a crumbling 1980s structure to the high-gloss facade of the luxury flat that replaced it. Use rapid pacing and heavy sub-bass drone to contrast the visual nostalgia.",
+    "tags": [
+      "TikTok",
+      "Vertical",
+      "Urban",
+      "Match Cut"
+    ],
+    "model": "Vertical Form"
+  },
+  {
+    "id": 2,
+    "title": "One Breath Monologue",
+    "category": "short",
+    "label": "SHORT FORM",
+    "accent": "#5c3d82",
+    "prompt": "A rapid-fire, direct-to-camera poetic rant delivered in a single, unbroken exhalation.\n\nScript a 45-second micro-monologue for a young actor addressing the camera directly on a brutally crowded subway. The text must be rhythmic, percussive, and physically exhausting to perform. The gimmick: they cannot take a breath until the final word. It's about modern anxiety manifesting as breathless momentum.",
+    "tags": [
+      "Monologue",
+      "Performance",
+      "Anxiety",
+      "Pacing"
+    ],
+    "model": "Performance"
+  },
+  {
+    "id": 3,
+    "title": "Micro-Doc: The Subculture",
+    "category": "short",
+    "label": "SHORT FORM",
+    "accent": "#5c3d82",
+    "prompt": "A 90-second documentary capturing the essence of a hyper-niche internet subculture without explaining exactly what it is.\n\nOutline the narrative arc for a super-short documentary. Avoid traditional talking heads. Use kinetic typography, screen recordings, and voice notes left by anonymous community members. The goal is to make the viewer feel the obsession and community of the subculture without treating it like an academic subject.",
+    "tags": [
+      "Micro-Doc",
+      "Internet",
+      "Subculture",
+      "Kinetic"
+    ],
+    "model": "Documentary"
+  },
+  {
+    "id": 4,
+    "title": "The Infinite Loop",
+    "category": "short",
+    "label": "SHORT FORM",
+    "accent": "#5c3d82",
+    "prompt": "A seamless 30-second narrative that perfectly loops back to its beginning frame, trapping the protagonist in a moment.\n\nDesign a tightly choreographed 30-second sequence where the final frame (a hand reaching for a coffee cup) is identical to the first frame. The narrative suggests the character is repeating the same mundane action forever, but with escalating, subtle surrealist changes in the background (the sky turning red, the clock running backward).",
+    "tags": [
+      "Loop",
+      "Surrealism",
+      "Choreography",
+      "Social"
+    ],
+    "model": "Narrative Loop"
+  },
+  {
+    "id": 5,
+    "title": "Data Visualization as Poetry",
+    "category": "short",
+    "label": "SHORT FORM",
+    "accent": "#5c3d82",
+    "prompt": "Using hard statistics about youth unemployment to generate abstract, beautiful, and terrifying motion graphics.\n\nCreate a concept for a 60-second social media piece that communicates the UK Youth Guarantee statistics without using any numbers on screen. Imagine using flocking algorithms, particle physics, or collapsing fluid dynamics to represent human capital and systemic failure. Combine an aggressive electronic beat with stark, minimalist visual metaphors.",
+    "tags": [
+      "Motion Graphics",
+      "Data",
+      "Generative",
+      "Politics"
+    ],
+    "model": "Motion Art"
+  },
+  {
+    "id": 6,
+    "title": "The Silent Review",
+    "category": "short",
+    "label": "SHORT FORM",
+    "accent": "#5c3d82",
+    "prompt": "A product or artwork review conducted entirely through hyper-focused, ASMR-style foley and macro cinematography, zero dialogue.\n\nStoryboard a 45-second video reviewing a tactile object (a mechanical keyboard, a vintage synthesizer, or a rare photobook). The camera never shows the reviewer's face. The \"review\" is conveyed purely through the sound of interaction\u2014heavy clicks, the scrape of paper, the hum of power\u2014and extreme macro shots focusing on texture and wear.",
+    "tags": [
+      "ASMR",
+      "Macro",
+      "Tactile",
+      "Review"
+    ],
+    "model": "Sensory Form"
+  },
+  {
+    "id": 1,
+    "title": "The Slow Cinema Essay",
+    "category": "long",
+    "label": "LONG FORM",
+    "accent": "#1a6a70",
+    "prompt": "A 90-minute video essay matching the deliberate, meditative pacing of the films it analyzes, rather than standard YouTube freneticism.\n\nStructure a feature-length video essay on the concept of 'Durational Cinema' (Tarkovsky, Akerman). The editing style must embody the subject matter: hold shots for uncomfortably long periods, use negative space, allow silence to breathe. Explore how forcing the audience to slow down online is an act of digital rebellion.",
+    "tags": [
+      "Video Essay",
+      "Slow Cinema",
+      "Analysis",
+      "Pacing"
+    ],
+    "model": "Long Essay"
+  },
+  {
+    "id": 2,
+    "title": "The Masterclass Autopsy",
+    "category": "long",
+    "label": "LONG FORM",
+    "accent": "#1a6a70",
+    "prompt": "A 2-hour granular breakdown of a single 3-minute scene from a masterpiece, analyzing every frame, sound cue, and lighting change.\n\nCreate an outline for an exhaustive, obsessive deep-dive video. Choose a seminal scene (e.g., the club scene in 'The Social Network' or the car ride in 'Children of Men'). Deconstruct the production design, the lens choices, the blocking, and the foley layers. Interview experts remotely to provide technical context. A masterclass in hyper-focus.",
+    "tags": [
+      "Analysis",
+      "Deep Dive",
+      "Craft",
+      "Deconstruction"
+    ],
+    "model": "Masterclass"
+  },
+  {
+    "id": 3,
+    "title": "Longitudinal Process Doc",
+    "category": "long",
+    "label": "LONG FORM",
+    "accent": "#1a6a70",
+    "prompt": "A 6-month diary tracking the creation of an indie game from the absolute beginning to the emotional launch day.\n\nPlan the narrative beats for a 2-hour documentary chronicling a solo developer making their first game. Focus purely on the psychological toll, the financial anxiety, and the thousands of micro-decisions involved. Reject the standard 'making-of' gloss; embrace the messy, chaotic reality of long-term independent creative work.",
+    "tags": [
+      "Documentary",
+      "Indie Games",
+      "Process",
+      "Psychology"
+    ],
+    "model": "Vlog/Doc Hybrid"
+  },
+  {
+    "id": 4,
+    "title": "The Ambient Livestream",
+    "category": "long",
+    "label": "LONG FORM",
+    "accent": "#1a6a70",
+    "prompt": "A 24-hour slow TV broadcast of a specific, evocative location to be used as secondary screen ambiance.\n\nDesign the aesthetic parameters for a continuous, unbroken Livestream meant to run in the background. Think a fixed-camera view of a Tokyo intersection in the rain, or a scanner radio feed overlaid onto the dashboard view of a night truck driver. Discuss audio mastering for 'presence' and the psychology of virtual co-presence.",
+    "tags": [
+      "Slow TV",
+      "Ambient",
+      "Livestream",
+      "Presence"
+    ],
+    "model": "Broadcast"
+  },
+  {
+    "id": 5,
+    "title": "The Interactive Branching Narrative",
+    "category": "long",
+    "label": "LONG FORM",
+    "accent": "#1a6a70",
+    "prompt": "An exhaustive, 3-hour long \"Choose Your Own Adventure\" YouTube experience built using hundreds of unlisted linking videos.\n\nMap out the flowchart for an ambitious interactive mystery format spanning dozens of interlinked videos. The central premise concerns a detective navigating a bureaucratic hellscape to find a missing file. Discuss the pacing challenges of an interactive narrative and how to design UI overlays to prompt viewer choices before the timer runs out.",
+    "tags": [
+      "Interactive",
+      "Narrative",
+      "YouTube API",
+      "Branching"
+    ],
+    "model": "Networked Video"
+  },
+  {
+    "id": 6,
+    "title": "The Multi-Cam Symposium",
+    "category": "long",
+    "label": "LONG FORM",
+    "accent": "#1a6a70",
+    "prompt": "A 4-hour unedited dinner conversation between four leading minds in creative technology, shot with cinematic lighting and 4K cameras.\n\nOrganize the concept for a 'dinner with Andre' style deep-intellectual dive. No host, no formal agenda, just food, wine, and four contrasting figures (e.g., a VR pioneer, a classical painter, an AI ethics researcher, and a sci-fi author). Detail the audio recording strategy to ensure crystal clear overlapping dialogue, and the multi-cam setup to maintain visual intimacy over an extended period.",
+    "tags": [
+      "Symposium",
+      "Unedited",
+      "Intellectual",
+      "Multi-Cam"
+    ],
+    "model": "Discussion Format"
+  }
+];
+
+let copiedCount = 0;
+
+function renderCards(filter = 'all') {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  const filtered = filter === 'all' ? prompts : prompts.filter(p => p.category === filter);
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = `card${p.featured ? ' featured' : ''}`;
+    card.style.setProperty('--card-accent', p.accent);
+    card.setAttribute('data-category', p.category);
+
+    const num = String(p.id).padStart(2, '0');
+    const tagsHtml = p.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-category">${p.label}</span>
+        <span class="card-index">${num}</span>
+      </div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-prompt">${p.prompt}</div>
+      <div class="card-tags">${tagsHtml}</div>
+      <div class="card-footer">
+        <span class="card-model">${p.model}</span>
+        <button class="copy-btn" onclick="copyPrompt(event, \`${p.prompt.replace(/`/g, '\\`')}\`, this)">Copy Prompt</button>
+      </div>
+    `;
+
+    // Stagger animation
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(12px)';
+    grid.appendChild(card);
+
+    setTimeout(() => {
+      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, i * 40);
+  });
+}
+
+function filterCards(category, btn) {
+  document.querySelectorAll('.tag-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(category);
+}
+
+function copyPrompt(e, text, btn) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('copied');
+    copiedCount++;
+    document.getElementById('copied-count').textContent = copiedCount;
+
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY - 30) + 'px';
+    tooltip.classList.add('show');
+
+    setTimeout(() => {
+      btn.textContent = 'Copy Prompt';
+      btn.classList.remove('copied');
+      tooltip.classList.remove('show');
+    }, 1800);
+  });
+}
+
+renderCards();
+</script>
+  <div class="donation-dock"><a href="https://paypal.me/rawork?locale.x=en_GB&country.x=GB" target="_blank" class="buy-coffee-btn paypal-btn">☕ PayPal (£1)</a><a href="https://buy.stripe.com/28E9AT3GCcfue0Aa1h9ws04" target="_blank" class="buy-coffee-btn stripe-btn">💳 Stripe (£1)</a></div>
+</body>
+</html>

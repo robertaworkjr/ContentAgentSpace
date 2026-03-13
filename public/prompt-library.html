@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROMPTFORGE — Image Generation Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #060608;
+    --deep: #0c0c12;
+    --surface: #111118;
+    --border: #1e1e2a;
+    --text: #e8e4dc;
+    --muted: #6a6880;
+    --accent-a: #c8ff47;
+    --accent-b: #ff4d6d;
+    --accent-c: #00d4ff;
+    --accent-d: #ff8c42;
+    --accent-e: #b47cff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* Header */
+  header {
+    padding: 60px 60px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: 'PROMPTS';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 200px;
+    color: var(--border);
+    letter-spacing: -10px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 4px;
+    line-height: 1;
+    z-index: 1;
+  }
+
+  .logo span {
+    color: var(--accent-a);
+  }
+
+  .header-meta {
+    text-align: right;
+    z-index: 1;
+  }
+
+  .header-meta p {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  /* Filter bar */
+  .filters {
+    padding: 20px 60px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-right: 12px;
+  }
+
+  .tag-pill {
+    padding: 4px 14px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .tag-pill:hover, .tag-pill.active {
+    color: var(--accent-a);
+    border-color: var(--accent-a);
+    background: rgba(200,255,71,0.05);
+  }
+
+  .tag-pill.all.active {
+    color: var(--black);
+    background: var(--accent-a);
+    border-color: var(--accent-a);
+  }
+
+  /* Grid */
+  .grid {
+    padding: 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 2px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 30px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--card-accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.25s ease;
+  }
+
+  .card:hover {
+    border-color: var(--card-accent);
+    transform: translateY(-2px);
+    z-index: 2;
+  }
+
+  .card:hover::before {
+    transform: scaleY(1);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+
+  .card-category {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    padding: 3px 8px;
+    border: 1px solid var(--card-accent);
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  .card-index {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--border);
+    letter-spacing: 1px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .card:hover .card-index {
+    color: var(--muted);
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .card-prompt {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(232,228,220,0.75);
+    line-height: 1.65;
+    margin-bottom: 18px;
+    letter-spacing: 0.2px;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .card-tag {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--deep);
+    border-radius: 1px;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-model {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    background: transparent;
+    border: 1px solid var(--card-accent);
+    padding: 4px 10px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+    border-radius: 1px;
+  }
+
+  .copy-btn:hover {
+    opacity: 1;
+    background: var(--card-accent);
+    color: var(--black);
+  }
+
+  .copy-btn.copied {
+    opacity: 1;
+    background: var(--card-accent);
+    color: var(--black);
+  }
+
+  /* Featured card */
+  .card.featured {
+    grid-column: span 2;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--deep) 100%);
+  }
+
+  .card.featured .card-prompt {
+    font-size: 16px;
+    columns: 2;
+    gap: 30px;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: var(--accent-a);
+    color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 5px 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 1000;
+    border-radius: 1px;
+  }
+
+  .tooltip.show { opacity: 1; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 40px;
+    padding: 16px 60px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent-a);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .card.hidden { display: none; }
+
+  /* Site Nav Link Elements */
+  .nav-back-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+    margin-bottom: 20px;
+  }
+  .nav-back-link:hover {
+    color: var(--accent-a);
+  }
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 900px) {
+    header { padding: 40px 24px 30px; }
+    .grid { padding: 24px; grid-template-columns: 1fr; }
+    .filters { padding: 16px 24px; }
+    .stats-bar { padding: 14px 24px; gap: 24px; }
+    .card.featured { grid-column: span 1; }
+    .card.featured .card-prompt { columns: 1; }
+    .logo { font-size: 48px; }
+  }
+  .donation-dock {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+  }
+  .buy-coffee-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--accent-a);
+    color: var(--black);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-family: 'DM Mono', monospace;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(200, 255, 71, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 100;
+  }
+  .stripe-btn {
+    background: #6772e5;
+    box-shadow: 0 4px 15px rgba(103, 114, 229, 0.3);
+    color: #fff;
+  }
+  .stripe-btn:hover {
+    background: #5469d4;
+    box-shadow: 0 6px 20px rgba(103, 114, 229, 0.5);
+  }
+  .buy-coffee-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(200, 255, 71, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="/" class="nav-back-link">← Back to Main Site</a>
+    <div class="logo">PROMPT<span>FORGE</span></div>
+    <p style="font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:8px;">Image Generation Library v1.0</p>
+  </div>
+  <div class="header-meta">
+    <p>Curated for Midjourney · DALL·E · Flux</p>
+    <p>Stable Diffusion · Firefly · Ideogram</p>
+    <p style="margin-top:8px;color:var(--accent-a)">20 Prompts · 6 Categories</p>
+  </div>
+</header>
+
+<div class="filters">
+  <span class="filter-label">Filter ↗</span>
+  <button class="tag-pill all active" onclick="filterCards('all', this)">All</button>
+  <button class="tag-pill" onclick="filterCards('cinematic', this)">Cinematic</button>
+  <button class="tag-pill" onclick="filterCards('immersive', this)">Immersive / XR</button>
+  <button class="tag-pill" onclick="filterCards('portrait', this)">Portrait</button>
+  <button class="tag-pill" onclick="filterCards('environment', this)">Environment</button>
+  <button class="tag-pill" onclick="filterCards('abstract', this)">Abstract</button>
+  <button class="tag-pill" onclick="filterCards('urban', this)">Urban / Street</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-val">20</span><span class="stat-label">Prompts</span></div>
+  <div class="stat"><span class="stat-val">6</span><span class="stat-label">Categories</span></div>
+  <div class="stat"><span class="stat-val">3</span><span class="stat-label">Aspect Ratios</span></div>
+  <div class="stat"><span class="stat-val" id="copied-count">0</span><span class="stat-label">Copied</span></div>
+</div>
+
+<div class="tooltip" id="tooltip">COPIED</div>
+
+<script>
+const prompts = [
+  {
+    id: 1,
+    title: "ANGEL ON THE ESTATE",
+    category: "cinematic",
+    label: "CINEMATIC",
+    accent: "#c8ff47",
+    prompt: "A luminous androgynous figure with iridescent wings partially folded stands on the roof of a brutalist 1990s Liverpool housing estate at 3am. Sodium streetlight halos mix with divine radiance. Rave fog drifts upward. Film grain, anamorphic lens flare, handheld 16mm aesthetic. Golden hour residue meeting cold council estate blues. Hyperrealistic, wide shot.",
+    tags: ["16mm", "practical light", "golden ratio", "wide"],
+    model: "Midjourney v6 · --ar 2.39:1 · --style raw",
+    featured: true
+  },
+  {
+    id: 2,
+    title: "RAVE CATHEDRAL",
+    category: "immersive",
+    label: "IMMERSIVE / XR",
+    accent: "#00d4ff",
+    prompt: "Interior of an abandoned church converted into a warehouse rave, 1992. Strobes cut through dry ice. A single dancer silhouetted against a makeshift laser rig. Gothic arches draped in smiley face banners. Kodachrome pushed 3 stops. Bird's eye drone perspective. Photorealistic.",
+    tags: ["immersive", "360°", "VR-ready", "low-key"],
+    model: "Flux Dev · --ar 1:1 · cinematic"
+  },
+  {
+    id: 3,
+    title: "NEON MEMORIAL",
+    category: "urban",
+    label: "URBAN / STREET",
+    accent: "#ff4d6d",
+    prompt: "Rain-slicked Liverpool alleyway at midnight. A makeshift shrine — flowers, candles, a single Adidas Gazelle — beneath a buzzing neon sign reading 'GRACE'. Long exposure light trails from passing taxis. Documentary photography style, Leica M6, Ilford Delta 3200.",
+    tags: ["documentary", "night", "long exposure", "35mm"],
+    model: "DALL·E 3 · 1792×1024"
+  },
+  {
+    id: 4,
+    title: "FALLEN LIGHT",
+    category: "portrait",
+    label: "PORTRAIT",
+    accent: "#b47cff",
+    prompt: "Close-up portrait of a young woman with platinum bleached hair and dilated pupils, skin flushed, eyes half-closed in transcendence. Backstage at a 1994 rave. Polaroid flash mixed with coloured gel lights. Grain-heavy, oversaturated, editorial. The feeling of 3am euphoria.",
+    tags: ["editorial", "polaroid", "gel light", "intimate"],
+    model: "Midjourney v6 · --ar 4:5"
+  },
+  {
+    id: 5,
+    title: "VOLUMETRIC VOID",
+    category: "abstract",
+    label: "ABSTRACT",
+    accent: "#ff8c42",
+    prompt: "An abstract digital sculpture: fractured light beams passing through a translucent humanoid void in deep space. Caustic refractions, volumetric god rays, iridescent surface tension, subsurface scattering. Rendered in Cinema 4D Redshift. Aspect ratio 1:1. Pure black void background.",
+    tags: ["3D render", "C4D", "volumetric", "abstract"],
+    model: "Ideogram 2.0 · 1:1 · stylize 1000"
+  },
+  {
+    id: 6,
+    title: "ESTATE TOPOGRAPHY",
+    category: "environment",
+    label: "ENVIRONMENT",
+    accent: "#c8ff47",
+    prompt: "Aerial orthographic view of a brutalist 1990s British housing estate at dusk. Each flat window glows amber or blue, tiny lives visible. A single figure on the roof. Ordnance Survey aesthetic meets satellite photography. Flat but rich in detail. Liminal, melancholic beauty.",
+    tags: ["aerial", "orthographic", "brutalist", "dusk"],
+    model: "Midjourney v6 · --ar 1:1 · --style raw"
+  },
+  {
+    id: 7,
+    title: "SCANNING THE REAL",
+    category: "immersive",
+    label: "IMMERSIVE / XR",
+    accent: "#00d4ff",
+    prompt: "Photogrammetric point cloud scan visualisation of a derelict Victorian warehouse interior. Cyan and magenta scan artifacts, floating unresolved geometry, ghost data. Technical beauty. XR UI overlays in the periphery showing scan progress percentages. Dark background. Ultra-sharp center, dissolving edges.",
+    tags: ["photogrammetry", "XR", "technical", "point cloud"],
+    model: "Stable Diffusion XL · --w 1344 --h 768"
+  },
+  {
+    id: 8,
+    title: "THE CARRIER",
+    category: "cinematic",
+    label: "CINEMATIC",
+    accent: "#c8ff47",
+    prompt: "A lone figure in a yellow hi-vis jacket walks through an empty motorway service station at 4am. Overhead fluorescents flicker. CCTV camera POV, fish-eye distortion. Dystopian realism. Inspired by early Andrea Arnold, gritty British social realism. Colour grade: bleach bypass, desaturated.",
+    tags: ["bleach bypass", "CCTV POV", "dystopian", "British"],
+    model: "Flux Dev · --ar 16:9 · cinematic"
+  },
+  {
+    id: 9,
+    title: "GHOST2000 SESSIONS",
+    category: "portrait",
+    label: "PORTRAIT",
+    accent: "#b47cff",
+    prompt: "A fragile young male singer-songwriter alone in a dimly lit recording booth, acoustic guitar barely visible, face partially obscured by shadows and condensation on the glass. Tender, introspective. Shot on expired Cinestill 800T. Intimate editorial photography for an indie music press feature.",
+    tags: ["cinestill", "music", "intimate", "editorial"],
+    model: "DALL·E 3 · 1024×1024"
+  },
+  {
+    id: 10,
+    title: "SLAVERY MEMORIAL",
+    category: "abstract",
+    label: "ABSTRACT",
+    accent: "#ff8c42",
+    prompt: "Cast iron bas-relief panel depicting intertwined hands — some reaching upward, some clasped together — rendered with the patina of centuries. Pre-weathered iron, selective corrosion, museum quality. Studio lighting on black. Symbolic, architectural, powerful. High detail macro photography.",
+    tags: ["cast iron", "memorial", "hands", "macro"],
+    model: "Midjourney v6 · --ar 3:4 · --style raw"
+  },
+  {
+    id: 11,
+    title: "LEVEL ZERO",
+    category: "environment",
+    label: "ENVIRONMENT",
+    accent: "#c8ff47",
+    prompt: "A concept environment painting for a racing game track set inside an abandoned British dockyard. Puddles reflecting neon overhead sponsor signage. Rusting cranes as track markers. Photorealistic mixed with concept art painterly strokes. Dramatic low sun angle, cinematic composition. Ultra-wide.",
+    tags: ["game art", "concept", "racing", "dockyard"],
+    model: "Midjourney v6 · --ar 21:9"
+  },
+  {
+    id: 12,
+    title: "IMMERSIVE GLITCH",
+    category: "immersive",
+    label: "IMMERSIVE / XR",
+    accent: "#00d4ff",
+    prompt: "A VR headset user frozen mid-experience in a dark room. Their body is motion-blurred, but their face behind the headset is hyper-sharp. Augmented reality UI fragments hover around them, glitching and dissolving. Long exposure photography aesthetic. Cyan data streams. Technological sublime.",
+    tags: ["VR", "glitch", "long exposure", "UI"],
+    model: "Stable Diffusion XL · --ar 16:9"
+  },
+  {
+    id: 13,
+    title: "MERSEY GOLDEN HOUR",
+    category: "urban",
+    label: "URBAN / STREET",
+    accent: "#ff4d6d",
+    prompt: "The Liverpool waterfront at magic hour — Liver Building backlit, ferry crossing a mirror-flat Mersey. Shot from a low, floating perspective. Wim Wenders colour palette: amber, slate, rose. 4x5 large format film. Monumental but tender. No tourists, just light and architecture and water.",
+    tags: ["golden hour", "4x5", "waterfront", "landmark"],
+    model: "DALL·E 3 · 1792×1024"
+  },
+  {
+    id: 14,
+    title: "FREQUENCY PORTRAIT",
+    category: "portrait",
+    label: "PORTRAIT",
+    accent: "#b47cff",
+    prompt: "Portrait of a DJ at the decks, face bathed in the purple-blue of a mixer display, sweat-sheened, deep in concentration. The crowd is visible as a blurred sea of hands behind them. Leica M9, Noctilux f/0.95. Bokeh-rich, f/1.4 equivalent. Reportage warmth, underground energy.",
+    tags: ["reportage", "Leica", "bokeh", "underground"],
+    model: "Midjourney v6 · --ar 4:5"
+  },
+  {
+    id: 15,
+    title: "DATA ARCHITECTURE",
+    category: "abstract",
+    label: "ABSTRACT",
+    accent: "#ff8c42",
+    prompt: "An isometric architectural diagram of a microservices system rendered as a glowing city at night. Each service is a building, APIs are lit bridges, data flows are rivers of light. Technical diagram meets fantasy city. Deep navy background, neon edge highlights. 3D render, ultra-sharp.",
+    tags: ["isometric", "data viz", "architecture", "neon"],
+    model: "Ideogram 2.0 · --ar 1:1"
+  },
+  {
+    id: 16,
+    title: "MELT SESSIONS",
+    category: "environment",
+    label: "ENVIRONMENT",
+    accent: "#c8ff47",
+    prompt: "A community arts studio interior: large windows, afternoon light, half-finished canvases, 3D printed sculptures on shelves, young people working. Warm, documentary photography. Shot on medium format Fuji GFX. The feeling of creative sanctuary. Natural light only, no flash. Inclusive, energetic, real.",
+    tags: ["community", "documentary", "medium format", "warm"],
+    model: "Flux Dev · --ar 3:2"
+  },
+  {
+    id: 17,
+    title: "PARTICLE ANGEL",
+    category: "abstract",
+    label: "ABSTRACT",
+    accent: "#ff8c42",
+    prompt: "A humanoid form constructed entirely from luminous particles — each particle is a tiny scene: a club night, a face, a hand, a door. The whole figure radiates from chest outward. Impossible detail, fractal zoom quality. Black background. Visual metaphor for collective memory. Octane render.",
+    tags: ["particles", "Octane", "fractal", "metaphor"],
+    model: "Midjourney v6 · --ar 2:3 · --v 6.1"
+  },
+  {
+    id: 18,
+    title: "SIGNAL LOST",
+    category: "cinematic",
+    label: "CINEMATIC",
+    accent: "#c8ff47",
+    prompt: "A public telephone box on a desolate Northern English housing estate, ringing in heavy rain. No one answers. Sodium streetlights reflect in puddles. Shot in the style of Shane Meadows — 16mm, shallow depth, handheld, deeply British melancholy. Dusk. Fog. The silence between rings.",
+    tags: ["British", "16mm", "handheld", "melancholy"],
+    model: "Flux Dev · --ar 2.39:1"
+  },
+  {
+    id: 19,
+    title: "WIGAN ARCHIVE",
+    category: "urban",
+    label: "URBAN / STREET",
+    accent: "#ff4d6d",
+    prompt: "A museum display case containing artefacts from 1970s Wigan: a Northern Soul 45rpm record, a rolled-up talcum powder handkerchief, a membership card for the Casino. Each object photographed against aged cream velvet. Documentary still-life. Soft directional light from above. Archival quality.",
+    tags: ["archive", "still life", "museum", "Northern Soul"],
+    model: "DALL·E 3 · 1024×1024"
+  },
+  {
+    id: 20,
+    title: "BROADCAST SIGNAL",
+    category: "cinematic",
+    label: "CINEMATIC",
+    accent: "#c8ff47",
+    prompt: "A BBC radio studio at night. A presenter alone, illuminated only by the desk lamp and the ON AIR red glow. Headphones on, leaning toward the microphone. Glass partition reveals an empty control room. Colour: tungsten warmth vs cold corridor fluorescent. Quiet drama. Medium shot.",
+    tags: ["BBC", "radio", "tungsten", "medium shot"],
+    model: "Midjourney v6 · --ar 16:9 · --style raw"
+  }
+];
+
+let copiedCount = 0;
+
+function renderCards(filter = 'all') {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  const filtered = filter === 'all' ? prompts : prompts.filter(p => p.category === filter);
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = `card${p.featured ? ' featured' : ''}`;
+    card.style.setProperty('--card-accent', p.accent);
+    card.setAttribute('data-category', p.category);
+
+    const num = String(p.id).padStart(2, '0');
+    const tagsHtml = p.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-category">${p.label}</span>
+        <span class="card-index">${num}</span>
+      </div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-prompt">${p.prompt}</div>
+      <div class="card-tags">${tagsHtml}</div>
+      <div class="card-footer">
+        <span class="card-model">${p.model}</span>
+        <button class="copy-btn" onclick="copyPrompt(event, \`${p.prompt.replace(/`/g, '\\`')}\`, this)">Copy Prompt</button>
+      </div>
+    `;
+
+    // Stagger animation
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(12px)';
+    grid.appendChild(card);
+
+    setTimeout(() => {
+      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, i * 40);
+  });
+}
+
+function filterCards(category, btn) {
+  document.querySelectorAll('.tag-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(category);
+}
+
+function copyPrompt(e, text, btn) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('copied');
+    copiedCount++;
+    document.getElementById('copied-count').textContent = copiedCount;
+
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY - 30) + 'px';
+    tooltip.classList.add('show');
+
+    setTimeout(() => {
+      btn.textContent = 'Copy Prompt';
+      btn.classList.remove('copied');
+      tooltip.classList.remove('show');
+    }, 1800);
+  });
+}
+
+renderCards();
+</script>
+  <div class="donation-dock"><a href="https://paypal.me/rawork?locale.x=en_GB&country.x=GB" target="_blank" class="buy-coffee-btn paypal-btn">☕ PayPal (£1)</a><a href="https://buy.stripe.com/28E9AT3GCcfue0Aa1h9ws04" target="_blank" class="buy-coffee-btn stripe-btn">💳 Stripe (£1)</a></div>
+</body>
+</html>
