@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROMPTFORGE — Copywriting & Content Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #060608;
+    --deep: #0c0c12;
+    --surface: #111118;
+    --border: #1e1e2a;
+    --text: #e8e4dc;
+    --muted: #6a6880;
+    --accent-a: #c8ff47;
+    --accent-b: #ff4d6d;
+    --accent-c: #00d4ff;
+    --accent-d: #ff8c42;
+    --accent-e: #b47cff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* Header */
+  header {
+    padding: 60px 60px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: 'COPY & CONTENT';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 150px;
+    color: var(--border);
+    letter-spacing: -5px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 4px;
+    line-height: 1;
+    z-index: 1;
+  }
+
+  .logo span {
+    color: var(--accent-a);
+  }
+
+  .header-meta {
+    text-align: right;
+    z-index: 1;
+  }
+
+  .header-meta p {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  /* Filter bar */
+  .filters {
+    padding: 20px 60px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-right: 12px;
+  }
+
+  .tag-pill {
+    padding: 4px 14px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .tag-pill:hover, .tag-pill.active {
+    color: var(--accent-a);
+    border-color: var(--accent-a);
+    background: rgba(200,255,71,0.05);
+  }
+
+  .tag-pill.all.active {
+    color: var(--black);
+    background: var(--accent-a);
+    border-color: var(--accent-a);
+  }
+
+  /* Grid */
+  .grid {
+    padding: 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 2px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 30px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--card-accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.25s ease;
+  }
+
+  .card:hover {
+    border-color: var(--card-accent);
+    transform: translateY(-2px);
+    z-index: 2;
+  }
+
+  .card:hover::before {
+    transform: scaleY(1);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+
+  .card-category {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    padding: 3px 8px;
+    border: 1px solid var(--card-accent);
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  .card-index {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--border);
+    letter-spacing: 1px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .card:hover .card-index {
+    color: var(--muted);
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .card-prompt {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(232,228,220,0.75);
+    line-height: 1.65;
+    margin-bottom: 18px;
+    letter-spacing: 0.2px;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .card-tag {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--deep);
+    border-radius: 1px;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-model {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    background: transparent;
+    border: 1px solid var(--card-accent);
+    padding: 4px 10px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+    border-radius: 1px;
+  }
+
+  .copy-btn:hover {
+    opacity: 1;
+    background: var(--card-accent);
+    color: var(--black);
+  }
+
+  .copy-btn.copied {
+    opacity: 1;
+    background: var(--card-accent);
+    color: var(--black);
+  }
+
+  /* Featured card */
+  .card.featured {
+    grid-column: span 2;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--deep) 100%);
+  }
+
+  .card.featured .card-prompt {
+    font-size: 16px;
+    columns: 2;
+    gap: 30px;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: var(--accent-a);
+    color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 5px 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 1000;
+    border-radius: 1px;
+  }
+
+  .tooltip.show { opacity: 1; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 40px;
+    padding: 16px 60px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent-a);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .card.hidden { display: none; }
+
+  /* Site Nav Link Elements */
+  .nav-back-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+    margin-bottom: 20px;
+  }
+  .nav-back-link:hover {
+    color: var(--accent-a);
+  }
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 900px) {
+    header { padding: 40px 24px 30px; }
+    .grid { padding: 24px; grid-template-columns: 1fr; }
+    .filters { padding: 16px 24px; }
+    .stats-bar { padding: 14px 24px; gap: 24px; }
+    .card.featured { grid-column: span 1; }
+    .card.featured .card-prompt { columns: 1; }
+    .logo { font-size: 48px; }
+  }
+  .donation-dock {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    z-index: 100;
+  }
+  .buy-coffee-btn {
+    background: var(--accent-a);
+    color: var(--black);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-family: 'DM Mono', monospace;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(200, 255, 71, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 100;
+  }
+  .stripe-btn {
+    background: #6772e5;
+    box-shadow: 0 4px 15px rgba(103, 114, 229, 0.3);
+    color: #fff;
+  }
+  .stripe-btn:hover {
+    background: #5469d4;
+    box-shadow: 0 6px 20px rgba(103, 114, 229, 0.5);
+  }
+  .buy-coffee-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(200, 255, 71, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="/" class="nav-back-link">← Back to Main Site</a>
+    <div class="logo">PROMPT<span>FORGE</span></div>
+    <p style="font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:8px;">Copywriting & Content Library v1.0</p>
+  </div>
+  <div class="header-meta">
+    <p>Curated for ChatGPT · Claude · Gemini</p>
+    <p>Copywriting · SEO · Social · Email</p>
+    <p style="margin-top:8px;color:var(--accent-a)">20 Prompts · 5 Categories</p>
+  </div>
+</header>
+
+<div class="filters">
+  <span class="filter-label">Filter ↗</span>
+  <button class="tag-pill all active" onclick="filterCards('all', this)">All</button>
+  <button class="tag-pill" onclick="filterCards('copywriting', this)">Copywriting</button>
+  <button class="tag-pill" onclick="filterCards('seo', this)">SEO & Blog</button>
+  <button class="tag-pill" onclick="filterCards('social', this)">Social Media</button>
+  <button class="tag-pill" onclick="filterCards('email', this)">Email Marketing</button>
+  <button class="tag-pill" onclick="filterCards('strategy', this)">Strategy</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-val">20</span><span class="stat-label">Prompts</span></div>
+  <div class="stat"><span class="stat-val">5</span><span class="stat-label">Categories</span></div>
+  <div class="stat"><span class="stat-val" id="copied-count">0</span><span class="stat-label">Copied</span></div>
+</div>
+
+<div class="tooltip" id="tooltip">COPIED</div>
+
+<script>
+const prompts = [
+  {
+    id: 1,
+    title: "SAAS LANDING PAGE",
+    category: "copywriting",
+    label: "COPYWRITING",
+    accent: "#c8ff47",
+    prompt: "Draft a high-converting landing page headline and subheadline for a new SaaS product that helps small businesses automate their invoice generation.",
+    tags: ["saas", "landing page", "conversion"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 2,
+    title: "WIN-BACK SEQUENCE",
+    category: "copywriting",
+    label: "COPYWRITING",
+    accent: "#ff4d6d",
+    prompt: "Write a persuasive, 3-part email sequence designed to re-engage inactive subscribers and offer them a special 20% discount on down-sell products.",
+    tags: ["email", "retention", "discount"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 3,
+    title: "SMART BOTTLE DESCRIPTION",
+    category: "copywriting",
+    label: "COPYWRITING",
+    accent: "#00d4ff",
+    prompt: "Create an exciting product description for an eco-friendly smart water bottle that tracks hydration levels and syncs with fitness apps.",
+    tags: ["ecommerce", "product", "eco-friendly"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 4,
+    title: "FACEBOOK AD: TOYS",
+    category: "copywriting",
+    label: "COPYWRITING",
+    accent: "#ff8c42",
+    prompt: "Write a compelling Facebook Ad copy targeting millennial parents looking for educational, screen-free toys for toddlers. Include a strong Call to Action (CTA).",
+    tags: ["facebook ad", "parents", "educational"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 5,
+    title: "SEO BLOG: SUSTAINABILITY",
+    category: "seo",
+    label: "SEO & BLOG",
+    accent: "#b47cff",
+    prompt: "Outline a comprehensive SEO-optimized blog post titled 'The Ultimate Guide to Sustainable Living in 2024'. Include key headings (H2, H3) and a meta description.",
+    tags: ["seo", "blog outline", "sustainability"],
+    model: "ChatGPT / Claude",
+    featured: true
+  },
+  {
+    id: 6,
+    title: "REMOTE WORK REAL ESTATE",
+    category: "seo",
+    label: "SEO & BLOG",
+    accent: "#c8ff47",
+    prompt: "Write an engaging introductory paragraph for a detailed article analyzing the impact of remote work on global real estate trends.",
+    tags: ["intro", "real estate", "remote work"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 7,
+    title: "VEGAN PREP KEYWORDS",
+    category: "seo",
+    label: "SEO & BLOG",
+    accent: "#ff4d6d",
+    prompt: "Generate a list of 10 long-tail keywords and content ideas centered around the topic of 'budget-friendly vegan meal prepping'.",
+    tags: ["keywords", "vegan", "budget"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 8,
+    title: "CRYPTO EXPLAINER",
+    category: "seo",
+    label: "SEO & BLOG",
+    accent: "#00d4ff",
+    prompt: "Draft a 500-word explainer article breaking down the concept of cryptocurrency and blockchain technology for a complete beginner, using simple analogies.",
+    tags: ["explainer", "crypto", "beginner"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 9,
+    title: "DEV TIPS THREAD",
+    category: "social",
+    label: "SOCIAL MEDIA",
+    accent: "#ff8c42",
+    prompt: "Create 5 engaging Twitter/X threads (just the first tweet of each) that share actionable tips for junior software developers to improve their coding skills.",
+    tags: ["twitter", "developer", "tips"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 10,
+    title: "MILESTONE POST",
+    category: "social",
+    label: "SOCIAL MEDIA",
+    accent: "#b47cff",
+    prompt: "Write a professional yet trendy LinkedIn post celebrating a major company milestone—hitting 10,000 active users—and thanking the team and community.",
+    tags: ["linkedin", "milestone", "professional"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 11,
+    title: "HOMEBUYER CAROUSEL",
+    category: "social",
+    label: "SOCIAL MEDIA",
+    accent: "#c8ff47",
+    prompt: "Draft an Instagram carousel script focusing on '5 Common Mistakes First-Time Homebuyers Make'. Include hook, slide content, and caption.",
+    tags: ["instagram", "carousel", "real estate"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 12,
+    title: "PRE-WORKOUT TIKTOK",
+    category: "social",
+    label: "SOCIAL MEDIA",
+    accent: "#ff4d6d",
+    prompt: "Come up with 3 creative TikTok video concepts for a fitness brand launching a new pre-workout supplement. Focus on trends and high-energy pacing.",
+    tags: ["tiktok", "fitness", "video concepts"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 13,
+    title: "AI NEWSLETTER WELCOME",
+    category: "email",
+    label: "EMAIL MARKETING",
+    accent: "#00d4ff",
+    prompt: "Write an enthusiastic welcome email for new subscribers joining a weekly newsletter about emerging tech trends and artificial intelligence.",
+    tags: ["welcome sequence", "newsletter", "tech"],
+    model: "ChatGPT / Claude",
+    featured: true
+  },
+  {
+    id: 14,
+    title: "ABANDONED CART NUDGE",
+    category: "email",
+    label: "EMAIL MARKETING",
+    accent: "#ff8c42",
+    prompt: "Draft a polite and effective abandoned cart reminder email for an online clothing store, gently nudging the customer to complete their purchase.",
+    tags: ["ecommerce", "abandoned cart", "conversion"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 15,
+    title: "SEO COLD OUTREACH",
+    category: "email",
+    label: "EMAIL MARKETING",
+    accent: "#b47cff",
+    prompt: "Create a personalized B2B cold outreach email template aimed at marketing directors, offering a free 15-minute consultation on their SEO strategy.",
+    tags: ["b2b", "cold email", "outreach"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 16,
+    title: "CAFE MONTHLY UPDATE",
+    category: "email",
+    label: "EMAIL MARKETING",
+    accent: "#c8ff47",
+    prompt: "Write a monthly newsletter update for a local coffee shop detailing new seasonal menu items, an upcoming live music event, and a loyalty program spotlight.",
+    tags: ["local business", "newsletter", "hospitality"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 17,
+    title: "INDIE GAME SCHEDULE",
+    category: "strategy",
+    label: "STRATEGY",
+    accent: "#ff4d6d",
+    prompt: "Provide a step-by-step 30-day content calendar for a new YouTube channel focused on reviewing indie video games.",
+    tags: ["youtube", "content calendar", "gaming"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 18,
+    title: "BOOKSTORE GUERRILLA",
+    category: "strategy",
+    label: "STRATEGY",
+    accent: "#00d4ff",
+    prompt: "Brainstorm 5 unique guerrilla marketing tactics for a small indie bookstore trying to increase foot traffic in a busy downtown area.",
+    tags: ["marketing tactics", "local", "guerrilla"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 19,
+    title: "MEAL KIT RETENTION",
+    category: "strategy",
+    label: "STRATEGY",
+    accent: "#ff8c42",
+    prompt: "Outline a customer retention strategy for a subscription-based meal kit service experiencing a high churn rate after the first month.",
+    tags: ["retention", "subscription", "strategy"],
+    model: "ChatGPT / Claude"
+  },
+  {
+    id: 20,
+    title: "KEYBOARD PERSONA",
+    category: "strategy",
+    label: "STRATEGY",
+    accent: "#b47cff",
+    prompt: "Identify the target audience and create a basic buyer persona for a high-end, luxury mechanical keyboard brand.",
+    tags: ["buyer persona", "audience", "ecommerce"],
+    model: "ChatGPT / Claude"
+  }
+];
+
+let copiedCount = 0;
+
+function renderCards(filter = 'all') {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  const filtered = filter === 'all' ? prompts : prompts.filter(p => p.category === filter);
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = `card${p.featured ? ' featured' : ''}`;
+    card.style.setProperty('--card-accent', p.accent);
+    card.setAttribute('data-category', p.category);
+
+    const num = String(p.id).padStart(2, '0');
+    const tagsHtml = p.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-category">${p.label}</span>
+        <span class="card-index">${num}</span>
+      </div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-prompt">${p.prompt}</div>
+      <div class="card-tags">${tagsHtml}</div>
+      <div class="card-footer">
+        <span class="card-model">${p.model}</span>
+        <button class="copy-btn" onclick="copyPrompt(event, \`${p.prompt.replace(/`/g, '\\`')}\`, this)">Copy Prompt</button>
+      </div>
+    `;
+
+    // Stagger animation
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(12px)';
+    grid.appendChild(card);
+
+    setTimeout(() => {
+      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, i * 40);
+  });
+}
+
+function filterCards(category, btn) {
+  document.querySelectorAll('.tag-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(category);
+}
+
+function copyPrompt(e, text, btn) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('copied');
+    copiedCount++;
+    document.getElementById('copied-count').textContent = copiedCount;
+
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY - 30) + 'px';
+    tooltip.classList.add('show');
+
+    setTimeout(() => {
+      btn.textContent = 'Copy Prompt';
+      btn.classList.remove('copied');
+      tooltip.classList.remove('show');
+    }, 1800);
+  });
+}
+
+renderCards();
+</script>
+  <div class="donation-dock"><a href="https://paypal.me/rawork?locale.x=en_GB&country.x=GB" target="_blank" class="buy-coffee-btn paypal-btn">☕ PayPal (£1)</a><a href="https://buy.stripe.com/28E9AT3GCcfue0Aa1h9ws04" target="_blank" class="buy-coffee-btn stripe-btn">💳 Stripe (£1)</a></div>
+</body>
+</html>
