@@ -39,8 +39,8 @@ const packs: PromptPack[] = [
     title: 'Viral Short-Form Video Pack',
     description:
       'Battle-tested prompts for TikTok, Reels & YouTube Shorts. Hook your audience in the first 3 seconds every time.',
-    price: 14.99,
-    originalPrice: 24.99,
+    price: 4.99,
+    originalPrice: 14.99,
     promptCount: 120,
     category: 'Video',
     icon: <Video className='h-6 w-6' />,
@@ -60,8 +60,8 @@ const packs: PromptPack[] = [
     title: 'AI Ad Copy Mastery Pack',
     description:
       'High-converting ad scripts and copy prompts for Facebook, Instagram, and YouTube ad campaigns.',
-    price: 17.99,
-    originalPrice: 27.99,
+    price: 3.99,
+    originalPrice: 17.99,
     promptCount: 85,
     category: 'Advertising',
     icon: <Megaphone className='h-6 w-6' />,
@@ -81,8 +81,8 @@ const packs: PromptPack[] = [
     title: 'Content Strategy Mega Pack',
     description:
       'A complete content calendar and strategy prompt system. Plan 30 days of content in under an hour.',
-    price: 19.99,
-    originalPrice: 29.99,
+    price: 7.99,
+    originalPrice: 19.99,
     promptCount: 200,
     category: 'Strategy',
     icon: <TrendingUp className='h-6 w-6' />,
@@ -101,7 +101,8 @@ const packs: PromptPack[] = [
     title: 'AI Image & Visual Prompts',
     description:
       'Midjourney, DALL·E & Stable Diffusion prompts engineered for social media-ready visuals that stop the scroll.',
-    price: 12.99,
+    price: 5.99,
+    originalPrice: 14.99,
     promptCount: 150,
     category: 'Visuals',
     icon: <Sparkles className='h-6 w-6' />,
@@ -120,7 +121,7 @@ const packs: PromptPack[] = [
     title: 'Viral Captions & Hooks Pack',
     description:
       'Never stare at a blank caption box again. Hundreds of proven caption structures and opening hooks.',
-    price: 9.99,
+    price: 6.99,
     originalPrice: 17.99,
     promptCount: 300,
     category: 'Copywriting',
@@ -140,7 +141,7 @@ const packs: PromptPack[] = [
     title: 'Ultimate Creator Bundle',
     description:
       'Every single prompt pack in one mega zip. The complete AI content creation arsenal for serious creators.',
-    price: 29.99,
+    price: 10.99,
     originalPrice: 74.99,
     promptCount: 855,
     category: 'Bundle',
@@ -209,55 +210,55 @@ const PromptStore = () => {
   }
 
   return (
-    <div className='min-h-screen bg-black text-white'>
+    <div className='min-h-screen bg-[#08101f] text-white'>
       <Navigation />
 
       {/* Hero */}
-      <section className='relative pt-28 pb-16 overflow-hidden'>
-        <div className='absolute inset-0'>
-          <div className='absolute top-20 left-1/4 w-80 h-80 bg-purple-700/25 rounded-full blur-3xl animate-pulse' />
-          <div className='absolute bottom-0 right-1/4 w-80 h-80 bg-pink-700/25 rounded-full blur-3xl animate-pulse delay-700' />
+      <section className='relative pt-28 pb-16 overflow-hidden bg-grid'>
+        <div className='absolute inset-0 pointer-events-none'>
+          <div className='absolute -top-24 left-1/4 w-96 h-96 bg-blue-700/15 rounded-full blur-3xl' />
+          <div className='absolute bottom-0 right-1/4 w-80 h-80 bg-cyan-700/10 rounded-full blur-3xl' />
         </div>
         <div className='relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
-          <Badge className='mb-4 bg-purple-900/60 text-purple-300 border border-purple-700 px-4 py-1 text-sm'>
+          <Badge className='mb-4 bg-blue-900/50 text-blue-300 border border-blue-700/50 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase'>
             ⚡ Instant Download · ZIP Files
           </Badge>
-          <h1 className='text-5xl md:text-7xl font-bold mb-6'>
+          <h1 className='text-5xl md:text-7xl font-extrabold mb-6 tracking-tight'>
             AI Prompt{' '}
-            <span className='bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent'>
+            <span className='bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent'>
               Store
             </span>
           </h1>
-          <p className='text-xl text-gray-300 max-w-2xl mx-auto mb-8'>
-            Hand-crafted, battle-tested AI prompt packs for content creators.
-            Download instantly. Create faster. Go viral.
+          <p className='text-xl text-slate-400 max-w-2xl mx-auto mb-8'>
+            Professionally curated AI prompt packs for content creators and marketers.
+            Download instantly. Deploy immediately.
           </p>
-          <div className='flex items-center justify-center gap-6 text-sm text-gray-400'>
+          <div className='flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500'>
             <span className='flex items-center gap-2'>
-              <CheckCircle className='h-4 w-4 text-green-400' /> Instant ZIP Download
+              <CheckCircle className='h-4 w-4 text-blue-400' /> Instant ZIP Download
             </span>
             <span className='flex items-center gap-2'>
-              <CheckCircle className='h-4 w-4 text-green-400' /> Lifetime Access
+              <CheckCircle className='h-4 w-4 text-blue-400' /> Lifetime Access
             </span>
             <span className='flex items-center gap-2'>
-              <CheckCircle className='h-4 w-4 text-green-400' /> Free Updates
+              <CheckCircle className='h-4 w-4 text-blue-400' /> Free Updates
             </span>
           </div>
         </div>
       </section>
 
       {/* Category Filter */}
-      <section className='py-6 border-y border-gray-800 bg-gray-950/50 sticky top-16 z-40 backdrop-blur-md'>
+      <section className='py-4 border-y border-blue-900/30 bg-[#09121f]/90 sticky top-16 z-40 backdrop-blur-md'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='flex gap-2 overflow-x-auto pb-1 scrollbar-hide'>
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`whitespace-nowrap px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   selectedCategory === cat
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-900/40'
-                    : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-900/40'
+                    : 'bg-[#0c1830] text-slate-400 border border-blue-900/40 hover:text-white hover:border-blue-600/50'
                 }`}
               >
                 {cat}
@@ -268,115 +269,115 @@ const PromptStore = () => {
       </section>
 
       {/* Products Grid */}
-      <section className='py-16 bg-gradient-to-b from-gray-950 to-black'>
+      <section className='py-16 bg-[#08101f]'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8'>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
             {filtered.map((pack) => (
               <div
                 key={pack.id}
-                className={`flex flex-col relative bg-gray-900 border rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl group ${
+                className={`flex flex-col relative bg-[#0c1830] border rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group ${
                   pack.id === 'ultimate-bundle'
-                    ? 'border-purple-500 shadow-lg shadow-purple-900/30'
-                    : 'border-gray-800 hover:border-gray-600'
+                    ? 'border-blue-500/60 shadow-lg shadow-blue-900/30'
+                    : 'border-blue-900/40 hover:border-blue-600/50'
                 }`}
               >
                 {/* Badges */}
                 <div className='absolute top-4 right-4 flex flex-col gap-2 z-10'>
                   {pack.popular && (
-                    <Badge className='bg-purple-600 text-white border-0 text-xs'>
+                    <Badge className='bg-blue-600 text-white border-0 text-xs font-semibold'>
                       🔥 Popular
                     </Badge>
                   )}
                   {pack.new && (
-                    <Badge className='bg-green-600 text-white border-0 text-xs'>
+                    <Badge className='bg-emerald-600 text-white border-0 text-xs font-semibold'>
                       ✨ New
                     </Badge>
                   )}
                   {pack.originalPrice && (
-                    <Badge className='bg-red-600/80 text-white border-0 text-xs'>
+                    <Badge className='bg-red-600/80 text-white border-0 text-xs font-semibold'>
                       -{Math.round(((pack.originalPrice - pack.price) / pack.originalPrice) * 100)}% OFF
                     </Badge>
                   )}
                 </div>
 
-                {/* Gradient Header */}
+                {/* Header Band */}
                 <div className={`bg-gradient-to-br ${pack.color} p-6 flex items-start gap-4`}>
-                  <div className='bg-white/20 rounded-xl p-3 backdrop-blur-sm'>
+                  <div className='bg-white/20 rounded-xl p-3 backdrop-blur-sm flex-shrink-0'>
                     {pack.icon}
                   </div>
                   <div>
-                    <p className='text-white/70 text-xs font-medium uppercase tracking-wider mb-1'>
+                    <p className='text-white/70 text-xs font-semibold uppercase tracking-widest mb-1'>
                       {pack.category}
                     </p>
                     <h2 className='text-white font-bold text-lg leading-tight'>
                       {pack.title}
                     </h2>
                   </div>
+                </div>
+
+                {/* Body */}
+                <div className='p-6 flex flex-col flex-grow'>
+                  <p className='text-slate-400 text-sm leading-relaxed mb-4'>
+                    {pack.description}
+                  </p>
+
+                  {/* Prompt Count */}
+                  <div className='flex items-center gap-2 mb-4'>
+                    <Download className='h-4 w-4 text-blue-400' />
+                    <span className='text-blue-300 font-semibold text-sm'>
+                      {pack.promptCount.toLocaleString()} prompts included
+                    </span>
                   </div>
 
-                  {/* Body - Flex Grow to push footer down */}
-                  <div className='p-6 flex flex-col flex-grow'>
-                    <p className='text-gray-400 text-sm leading-relaxed mb-4'>
-                      {pack.description}
-                    </p>
-
-                    {/* Prompt Count */}
-                    <div className='flex items-center gap-2 mb-4'>
-                      <Download className='h-4 w-4 text-purple-400' />
-                      <span className='text-purple-300 font-semibold text-sm'>
-                        {pack.promptCount.toLocaleString()} prompts included
+                  {/* Tags */}
+                  <div className='flex flex-wrap gap-1.5 mb-5'>
+                    {pack.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className='text-xs px-2.5 py-1 bg-blue-900/20 text-blue-300 rounded-md border border-blue-800/40'
+                      >
+                        {tag}
                       </span>
-                    </div>
+                    ))}
+                  </div>
 
-                    {/* Tags */}
-                    <div className='flex flex-wrap gap-2 mb-5'>
-                      {pack.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className='text-xs px-2 py-1 bg-gray-800 text-gray-400 rounded-md border border-gray-700'
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                  {/* Features */}
+                  <ul className='space-y-2 mb-6 flex-grow'>
+                    {pack.features.map((feat) => (
+                      <li key={feat} className='flex items-start gap-2 text-sm text-slate-400'>
+                        <CheckCircle className='h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0' />
+                        {feat}
+                      </li>
+                    ))}
+                  </ul>
 
-                    {/* Features */}
-                    <ul className='space-y-2 mb-6 flex-grow'>
-                      {pack.features.map((feat) => (
-                        <li key={feat} className='flex items-start gap-2 text-sm text-gray-300'>
-                          <CheckCircle className='h-4 w-4 text-green-400 mt-0.5 flex-shrink-0' />
-                          {feat}
-                        </li>
-                      ))}
-                    </ul>
+                  {/* Stars */}
+                  <div className='flex items-center gap-1 mb-5'>
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className='h-4 w-4 text-yellow-400 fill-yellow-400' />
+                    ))}
+                    <span className='text-slate-600 text-xs ml-1'>(4.9)</span>
+                  </div>
 
-                    {/* Stars */}
-                    <div className='flex items-center gap-1 mb-5'>
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className='h-4 w-4 text-yellow-400 fill-yellow-400' />
-                      ))}
-                      <span className='text-gray-500 text-xs ml-1'>(4.9)</span>
-                    </div>
-
-                    {/* Price & CTAs */}
-                    <div className='flex flex-col mt-auto'>
+                  {/* Price & CTAs */}
+                  <div className='flex flex-col mt-auto'>
                     <div className='flex items-baseline gap-2 mb-3'>
                       <span className='text-3xl font-bold text-white'>
                         ${pack.price}
                       </span>
                       {pack.originalPrice && (
-                        <span className='text-gray-600 line-through text-sm'>
+                        <span className='text-slate-600 line-through text-sm'>
                           ${pack.originalPrice}
                         </span>
                       )}
-                      <span className='text-gray-600 text-xs ml-auto'>One-time</span>
+                      <span className='text-slate-600 text-xs ml-auto'>One-time</span>
                     </div>
-                    
+
                     <div className='flex flex-row gap-2 w-full'>
                       <Button
                         onClick={() => handlePurchase(pack)}
                         disabled={loadingPack === pack.id}
-                        className={`flex-1 min-w-0 bg-gradient-to-r ${pack.color} hover:opacity-90 text-white border-0 shadow-lg transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed`}
+                        className='flex-1 min-w-0 bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-md shadow-blue-900/40 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed font-semibold'
                       >
                         {loadingPack === pack.id ? (
                           <span className='flex items-center justify-center gap-1 text-xs'>
@@ -393,7 +394,7 @@ const PromptStore = () => {
                       <Button
                         onClick={() => handlePurchase(pack)}
                         disabled={loadingPack === pack.id}
-                        className="flex-1 min-w-0 bg-[#0070ba] hover:bg-[#005ea6] text-white border-0 shadow-lg transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className='flex-1 min-w-0 bg-[#0070ba] hover:bg-[#005ea6] text-white border-0 shadow-md transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed font-semibold'
                       >
                         {loadingPack === pack.id ? (
                           <span className='flex items-center justify-center gap-1 text-xs'>
@@ -416,24 +417,26 @@ const PromptStore = () => {
       </section>
 
       {/* Trust Section */}
-      <section className='py-16 border-t border-gray-800'>
-        <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
-          <h2 className='text-3xl font-bold mb-10 text-white'>
-            Why Creators Love Our{' '}
-            <span className='bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent'>
-              Prompt Packs
+      <section className='py-16 border-t border-blue-900/20 bg-[#09121f]'>
+        <div className='max-w-5xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <h2 className='text-3xl font-bold mb-10 text-white text-center'>
+            Why Teams Choose{' '}
+            <span className='bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent'>
+              Our Prompt Packs
             </span>
           </h2>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
             {[
               { icon: '⚡', title: 'Instant Download', desc: 'Get your ZIP file the moment you purchase. No waiting, no approval process.' },
               { icon: '🔄', title: 'Lifetime Updates', desc: 'As AI evolves, so do our prompts. Every purchase includes all future updates.' },
-              { icon: '💬', title: 'Community Access', desc: 'Join our private creator community. Share results, get feedback, grow faster.' },
+              { icon: '🔒', title: 'Stripe & PayPal', desc: 'Choose your preferred payment method — both are accepted at every checkout.' },
             ].map((item) => (
-              <div key={item.title} className='bg-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:border-gray-600 transition-colors'>
-                <div className='text-4xl mb-3'>{item.icon}</div>
-                <h3 className='text-white font-semibold mb-2'>{item.title}</h3>
-                <p className='text-gray-400 text-sm leading-relaxed'>{item.desc}</p>
+              <div key={item.title} className='flex gap-4 bg-[#0c1830] border border-blue-900/30 rounded-2xl p-6 hover:border-blue-700/40 transition-colors'>
+                <div className='flex-shrink-0 text-2xl'>{item.icon}</div>
+                <div>
+                  <h3 className='text-white font-semibold mb-1'>{item.title}</h3>
+                  <p className='text-slate-500 text-sm leading-relaxed'>{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -441,41 +444,42 @@ const PromptStore = () => {
       </section>
 
       {/* Footer CTA */}
-      <section className='py-20 bg-gradient-to-b from-black to-gray-950'>
+      <section className='py-24 bg-gradient-to-b from-[#08101f] to-[#060d18] border-t border-blue-900/20'>
         <div className='max-w-2xl mx-auto px-4 text-center'>
+          <p className='text-xs font-bold tracking-widest text-blue-400 uppercase mb-4'>Best Value</p>
           <h2 className='text-3xl font-bold mb-4 text-white'>
             Not sure which pack to start with?
           </h2>
-          <p className='text-gray-400 mb-8'>
-            The Ultimate Bundle gives you everything at 60% off. The most popular choice for serious creators.
+          <p className='text-slate-400 mb-8'>
+            The Ultimate Bundle gives you everything at 60% off. 855+ prompts, one price.
           </p>
-          <div className='flex flex-col sm:flex-row gap-4 justify-center max-w-xl mx-auto'>
+          <div className='flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto'>
             <Button
               onClick={() => handlePurchase(packs.find((p) => p.id === 'ultimate-bundle')!)}
               disabled={loadingPack === 'ultimate-bundle'}
               size='lg'
-              className='flex-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:opacity-90 text-white text-lg py-6 shadow-2xl shadow-purple-900/40 disabled:opacity-70'
+              className='flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-base py-6 rounded-xl shadow-xl shadow-blue-900/40 transition-all duration-200 hover:-translate-y-px disabled:opacity-70'
             >
               {loadingPack === 'ultimate-bundle' ? (
                 <><Loader2 className='mr-2 h-5 w-5 animate-spin' />Processing…</>
               ) : (
-                <><ShoppingCart className='mr-2 h-5 w-5' />Stripe — $29.99</>
+                <><ShoppingCart className='mr-2 h-5 w-5' />Stripe — $10.99</>
               )}
             </Button>
             <Button
               onClick={() => handlePurchase(packs.find((p) => p.id === 'ultimate-bundle')!)}
               disabled={loadingPack === 'ultimate-bundle'}
               size='lg'
-              className='flex-1 bg-[#0070ba] hover:bg-[#005ea6] text-white text-lg py-6 shadow-2xl disabled:opacity-70'
+              className='flex-1 bg-[#0070ba] hover:bg-[#005ea6] text-white font-bold text-base py-6 rounded-xl shadow-xl transition-all duration-200 hover:-translate-y-px disabled:opacity-70'
             >
               {loadingPack === 'ultimate-bundle' ? (
                 <><Loader2 className='mr-2 h-5 w-5 animate-spin' />Processing…</>
               ) : (
-                <>PayPal — $29.99</>
+                <>PayPal — $10.99</>
               )}
             </Button>
           </div>
-          <p className='text-gray-600 text-sm mt-6'>30-day money-back guarantee · Secure checkout</p>
+          <p className='text-slate-700 text-sm mt-6'>30-day money-back guarantee · Secure checkout</p>
         </div>
       </section>
     </div>

@@ -58,7 +58,7 @@ const PurchaseSuccess = () => {
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
       // Only attempt to fetch from Supabase if we have valid credentials
-      if (supabaseUrl && supabaseAnonKey && supabaseUrl !== 'https://jpfmfvivpywoxywbgxuc.supabase.co') {
+      if (supabaseUrl && supabaseAnonKey && !supabaseAnonKey.startsWith('REPLACE')) {
         const res = await fetch(`${supabaseUrl}/functions/v1/get-download-url`, {
           method: 'POST',
           headers: {
