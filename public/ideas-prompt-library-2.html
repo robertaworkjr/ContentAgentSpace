@@ -414,6 +414,115 @@
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(200, 255, 71, 0.5);
   }
+
+  /* ── Soft-Gate Blur ── */
+  .blur-gate-wrapper {
+    position: relative;
+    grid-column: 1 / -1;
+  }
+  .blur-gate-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  .blur-gate-card {
+    background: rgba(12, 12, 18, 0.92);
+    border: 1px solid var(--accent-a);
+    border-radius: 4px;
+    padding: 40px 48px;
+    text-align: center;
+    max-width: 480px;
+    width: 90%;
+    backdrop-filter: blur(4px);
+  }
+  .blur-gate-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--accent-a);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .blur-gate-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .blur-gate-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(232,228,220,0.75);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .blur-gate-cta {
+    display: inline-block;
+    background: var(--accent-a);
+    color: var(--black);
+    padding: 12px 28px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-bottom: 16px;
+  }
+  .blur-gate-cta:hover { opacity: 0.85; transform: translateY(-2px); }
+  .blur-gate-or {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .blur-gate-kofi {
+    color: var(--accent-c);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .blur-gate-kofi:hover { color: var(--text); }
+
+  /* ── Inline Ko-fi Banner ── */
+  .kofi-inline-banner {
+    background: var(--deep);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .kofi-inline-banner .kofi-banner-text { flex: 1; }
+  .kofi-inline-banner .kofi-banner-text strong { color: var(--text); }
+  .kofi-inline-banner a.kofi-banner-btn {
+    background: var(--accent-a);
+    color: var(--black);
+    padding: 8px 18px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  .kofi-inline-banner a.kofi-banner-btn:hover { opacity: 0.85; }
+  @media (max-width: 600px) {
+    .kofi-inline-banner { padding: 12px 16px; flex-wrap: wrap; }
+  }
 </style>
 </head>
 <body>
@@ -430,6 +539,12 @@
     <p style="margin-top:8px;color:var(--accent-a)">20 Prompts · 6 Categories</p>
   </div>
 </header>
+
+<!-- Inline Ko-fi Support Banner -->
+<div class="kofi-inline-banner">
+  <span class="kofi-banner-text">✦ <strong>These prompts are free.</strong> If they spark something great, consider supporting the project — it keeps new packs coming.</span>
+  <a href="https://ko-fi.com/contentagentspace" target="_blank" class="kofi-banner-btn">☕ Support on Ko-fi</a>
+</div>
 
 <div class="filters">
   <span class="filter-label">Filter ↗</span>
@@ -1364,7 +1479,35 @@ function renderCards(filter = 'all') {
 
   const filtered = filter === 'all' ? prompts : prompts.filter(p => p.category === filter);
 
+  // Soft-gate: wrap cards beyond 15 in a blur container
+  let blurWrapper = null;
+
   filtered.forEach((p, i) => {
+    const GATE = 15;
+    if (i === GATE && filter === 'all') {
+      blurWrapper = document.createElement('div');
+      blurWrapper.className = 'blur-gate-wrapper';
+      blurWrapper.style.cssText = 'position:relative; grid-column:1/-1;';
+
+      const innerGrid = document.createElement('div');
+      innerGrid.className = 'blur-gate-inner';
+      innerGrid.style.cssText = 'display:grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1px; filter: blur(6px); pointer-events:none; user-select:none;';
+      blurWrapper.appendChild(innerGrid);
+
+      const overlay = document.createElement('div');
+      overlay.className = 'blur-gate-overlay';
+      overlay.innerHTML = `
+        <div class="blur-gate-card">
+          <p class="blur-gate-eyebrow">✦ FREE PREVIEW ENDS HERE ✦</p>
+          <h2 class="blur-gate-title">Enjoying these?</h2>
+          <p class="blur-gate-sub">Download the full pack with <strong>120+ prompts</strong> — every category, unlocked.</p>
+          <a href="/prompt-store" class="blur-gate-cta">Get the Full Pack →</a>
+          <p class="blur-gate-or">or <a href="https://ko-fi.com/contentagentspace" target="_blank" class="blur-gate-kofi">support the project on Ko-fi ☕</a></p>
+        </div>`;
+      blurWrapper.appendChild(overlay);
+      grid.appendChild(blurWrapper);
+    }
+
     const card = document.createElement('div');
     card.className = `card${p.featured ? ' featured' : ''}`;
     card.style.setProperty('--card-accent', p.accent);
@@ -1390,7 +1533,11 @@ function renderCards(filter = 'all') {
     // Stagger animation
     card.style.opacity = '0';
     card.style.transform = 'translateY(12px)';
-    grid.appendChild(card);
+    if (blurWrapper) {
+      blurWrapper.querySelector('.blur-gate-inner').appendChild(card);
+    } else {
+      grid.appendChild(card);
+    }
 
     setTimeout(() => {
       card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
@@ -1428,7 +1575,83 @@ function copyPrompt(e, text, btn) {
 }
 
 renderCards();
+
+/* ── TIMED NUDGE BAR ── */
+(function() {
+  if (sessionStorage.getItem('kofi-nudge-dismissed')) return;
+  setTimeout(function() {
+    if (sessionStorage.getItem('kofi-nudge-dismissed')) return;
+    var bar = document.getElementById('kofi-nudge-bar');
+    if (bar) bar.classList.add('show');
+  }, 45000);
+})();
 </script>
+
+<!-- Ko-fi Overlay Widget -->
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('contentagentspace', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#c8ff47',
+    'floating-chat.donateButton.text-color': '#060608'
+  });
+</script>
+
+<!-- Timed Nudge Bar -->
+<style>
+  #kofi-nudge-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--accent-a);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 10000;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+  #kofi-nudge-bar.show { transform: translateY(0); }
+  #kofi-nudge-bar .nudge-text { flex: 1; letter-spacing: 0.5px; }
+  #kofi-nudge-bar .nudge-support {
+    background: var(--accent-a);
+    color: var(--black);
+    padding: 8px 18px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 11px;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  #kofi-nudge-bar .nudge-support:hover { opacity: 0.85; }
+  #kofi-nudge-bar .nudge-dismiss {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    transition: color 0.2s;
+  }
+  #kofi-nudge-bar .nudge-dismiss:hover { color: var(--text); }
+</style>
+<div id="kofi-nudge-bar">
+  <span class="nudge-text">These prompts are free — if they're useful, buy us a coffee ☕</span>
+  <a href="https://ko-fi.com/contentagentspace" target="_blank" class="nudge-support">Support Us →</a>
+  <button class="nudge-dismiss" onclick="document.getElementById('kofi-nudge-bar').classList.remove('show'); sessionStorage.setItem('kofi-nudge-dismissed','1');">✕</button>
+</div>
+
   <div class="donation-dock"><a href="https://paypal.me/rawork?locale.x=en_GB&country.x=GB" target="_blank" class="buy-coffee-btn paypal-btn">☕ PayPal (£1)</a><a href="https://buy.stripe.com/28E9AT3GCcfue0Aa1h9ws04" target="_blank" class="buy-coffee-btn stripe-btn">💳 Stripe (£1)</a></div>
 </body>
 </html>
