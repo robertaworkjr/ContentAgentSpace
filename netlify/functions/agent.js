@@ -112,7 +112,7 @@ function corsHeaders(event) {
 }
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const headers = { ...corsHeaders(event), "Content-Type": "application/json" };
 
   // Preflight
