@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navigation from '@/components/Navigation'
+import EmailCapture from '@/components/EmailCapture'
+import StickyCTA from '@/components/StickyCTA'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -14,8 +16,113 @@ import {
   Package,
   CheckCircle,
   Loader2,
+  Clock,
+  Eye,
+  Users,
+  Quote,
+  Lightbulb,
+  Tag,
+  X,
 } from 'lucide-react'
 import { toast } from 'sonner'
+
+// Sample prompts for preview
+const samplePrompts: Record<string, string[]> = {
+  'viral-video-pack': [
+    'Create a 15-second TikTok hook that makes viewers stop scrolling. Topic: [Your Niche]. Include: Surprise element, emotional trigger, and clear CTA.',
+    'Generate 5 viral video concepts for [Industry] using trending sounds from the past 7 days.',
+    'Write a script for a "before and after" transformation video that showcases [Product/Service] benefits.',
+    'Create a "How I did it" video script with 3 key lessons learned from [Achievement]. End with a suspenseful hook for Part 2.',
+  ],
+  'ad-copy-pack': [
+    'Write a Facebook ad hook that targets [Pain Point] for [Target Audience]. Use urgency and social proof.',
+    'Create 3 ad variations for [Product] using the AIDA formula (Attention, Interest, Desire, Action).',
+    'Generate a high-converting YouTube ad script (15-30 seconds) for [Service]. Include: Hook, problem, solution, CTA.',
+    'Write a lead magnet ad that offers [Free Resource] in exchange for email signup. Use curiosity gap.',
+  ],
+  'content-strategy-pack': [
+    'Create a 30-day content calendar for [Niche] with post types, hooks, and optimal posting times.',
+    'Generate 10 content pillar ideas for [Business Type] that establish authority in the space.',
+    'Create a content repurposing strategy: Turn 1 long-form video into 5 social media posts.',
+    'Generate a viral content framework using the "Problem-Agitate-Solve" method for [Topic].',
+  ],
+  'ai-image-pack': [
+    'Generate a photorealistic portrait of a [Profession] in a [Style] setting, hyper-detailed, 8K, cinematic lighting, --ar 16:9',
+    'Create a minimalist abstract background for social media posts, gradient colors, clean lines, --ar 1:1',
+    'Design a futuristic product mockup for [Product Type], neon lighting, cyberpunk style, highly detailed, --ar 3:4',
+    'Generate a fantasy landscape with [Theme], epic composition, award-winning photography, ultra HD, --ar 21:9',
+  ],
+  'viral-captions-pack': [
+    'Write 10 engaging Instagram captions for [Product Launch]. Include emojis, hashtags, and CTAs.',
+    'Create 5 Twitter threads hooks that spark conversations about [Controversial Topic].',
+    'Generate 7 LinkedIn post hooks for [Industry Insight] that position you as a thought leader.',
+    'Write 10 YouTube video titles with high CTR potential for [Keyword]. Include power words and curiosity.',
+  ],
+  'ultimate-bundle': [
+    'Create a complete social media strategy for [Brand] including content pillars, posting schedule, and engagement tactics.',
+    'Generate a 7-day email sequence for [Lead Magnet] that nurtures leads into customers.',
+    'Write a sales page for [Product] using the PAS (Problem-Agitate-Solve) formula with testimonials and guarantees.',
+    'Create a viral TikTok series concept with 5 interconnected videos that tell a compelling story.',
+  ],
+}
+
+// Testimonials
+const testimonials = [
+  {
+    name: 'Sarah M.',
+    role: 'Social Media Manager',
+    avatar: 'SM',
+    rating: 5,
+    text: 'These prompts saved me 20+ hours a week. My engagement rate tripled in 30 days using the viral video pack. Worth every penny.',
+    pack: 'viral-video-pack',
+    timestamp: '2 weeks ago',
+  },
+  {
+    name: 'James K.',
+    role: 'E-commerce Owner',
+    avatar: 'JK',
+    rating: 5,
+    text: 'The ad copy pack paid for itself in one campaign. My ROAS went from 2.1 to 4.7 overnight. Insane value.',
+    pack: 'ad-copy-pack',
+    timestamp: '1 month ago',
+  },
+  {
+    name: 'Lisa T.',
+    role: 'Content Creator',
+    avatar: 'LT',
+    rating: 5,
+    text: 'The Ultimate Bundle is a game-changer. I went from posting sporadically to having 30 days of content planned and ready. My traffic is up 400%.',
+    pack: 'ultimate-bundle',
+    timestamp: '3 weeks ago',
+  },
+  {
+    name: 'David R.',
+    role: 'Marketing Director',
+    avatar: 'DR',
+    rating: 5,
+    text: 'We bought the content strategy pack for our agency. The frameworks are so good we\'re using them for all our clients. 10/10 would buy again.',
+    pack: 'content-strategy-pack',
+    timestamp: '2 months ago',
+  },
+  {
+    name: 'Emily S.',
+    role: 'Freelance Designer',
+    avatar: 'ES',
+    rating: 5,
+    text: 'The AI image prompts are next level. I\'ve created portfolio pieces that clients think I spent hours on. Little do they know it takes me 10 minutes now.',
+    pack: 'ai-image-pack',
+    timestamp: '1 week ago',
+  },
+  {
+    name: 'Mark W.',
+    role: 'Copywriter',
+    avatar: 'MW',
+    rating: 5,
+    text: 'The caption pack solved my writer\'s block. I have 100+ high-performing captions ready to go. My client retention went through the roof.',
+    pack: 'viral-captions-pack',
+    timestamp: '1 month ago',
+  },
+]
 
 interface PromptPack {
   id: string
@@ -31,9 +138,191 @@ interface PromptPack {
   new?: boolean
   features: string[]
   color: string
+  discount?: number
+  savings?: number
 }
 
-const packs: PromptPack[] = [
+// Countdown timer for bundle deal
+const CountdownTimer = ({ hours = 24 }: { hours?: number }) => {
+  const [timeLeft, setTimeLeft] = useState<{h: number, m: number, s: number}>({h: hours, m: 0, s: 0})
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.s > 0) return { ...prev, s: prev.s - 1 }
+        if (prev.m > 0) return { h: prev.h, m: prev.m - 1, s: 59 }
+        if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 }
+        return { h: 0, m: 0, s: 0 }
+      })
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <div className="flex items-center gap-2 bg-red-900/20 border border-red-600/30 rounded-full px-4 py-2">
+      <Clock className="h-3 w-3 text-red-400" />
+      <span className="text-xs font-bold text-red-400">
+        {timeLeft.h}h {timeLeft.m}m {timeLeft.s}s left at this price!
+      </span>
+    </div>
+  )
+}
+
+// Preview modal component
+const PreviewModal = ({ 
+  isOpen, 
+  onClose, 
+  packId, 
+  packTitle 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  packId: string; 
+  packTitle: string 
+}) => {
+  if (!isOpen) return null
+  
+  const prompts = samplePrompts[packId] || samplePrompts['ultimate-bundle']
+  
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-[#0c1830] border border-blue-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-blue-900/50">
+        <div className="sticky top-0 bg-[#0c1830]/90 backdrop-blur-md border-b border-blue-800/50 px-6 py-4 flex items-center justify-between z-10">
+          <h3 className="text-lg font-bold text-white">
+            <Eye className="h-5 w-5 text-blue-400 inline mr-2" />
+            Preview: {packTitle}
+          </h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/5">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        
+        <div className="p-6 space-y-4">
+          {prompts.map((prompt, index) => (
+            <div 
+              key={index} 
+              className="bg-[#08101f] border border-blue-900/30 rounded-xl p-4 hover:border-blue-700/40 transition-colors"
+            >
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-bold text-blue-400 flex-shrink-0 mt-0.5">
+                  {index + 1}.
+                </span>
+                <p className="text-slate-300 text-sm leading-relaxed">{prompt}</p>
+              </div>
+            </div>
+          ))}
+          
+          <div className="bg-blue-900/20 border border-blue-800/40 rounded-xl p-4 text-center mt-6">
+            <p className="text-blue-300 text-sm">
+              <Lightbulb className="h-4 w-4 inline mr-1" />
+              showing {prompts.length} of {packs.find(p => p.id === packId)?.promptCount || 'hundreds'} prompts
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Testimonials carousel
+const TestimonialsSection = () => {
+  const [selectedPack, setSelectedPack] = useState<'all' | string>('all')
+  
+  const filtered = selectedPack === 'all' 
+    ? testimonials 
+    : testimonials.filter(t => t.pack === selectedPack)
+  
+  const packOptions = [
+    { id: 'all', name: 'All Packs' }, 
+    ...packs.map(p => ({ id: p.id, name: p.title }))
+  ]
+  
+  return (
+    <section className="py-16 border-t border-blue-900/20 bg-[#09121f]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <p className="text-xs font-bold tracking-widest text-blue-400 uppercase mb-3">
+            Trusted by 1,000+ Creators
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            What Our{' '}
+            <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+              Customers Say
+            </span>
+          </h2>
+          <p className="text-slate-400 mt-3 max-w-2xl mx-auto">
+            Real results from real creators using our prompt packs
+          </p>
+        </div>
+        
+        {/* Filter tabs */}
+        <div className="flex gap-2 overflow-x-auto pb-4 mb-8 -mx-4 px-4 scrollbar-hide">
+          {packOptions.map(option => (
+            <button
+              key={option.id}
+              onClick={() => setSelectedPack(option.id)}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                selectedPack === option.id
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-900/40'
+                  : 'bg-[#0c1830] text-slate-400 border border-blue-900/40 hover:border-blue-700/40'
+              }`}
+            >
+              {option.name}
+            </button>
+          ))}
+        </div>
+        
+        {/* Testimonials grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filtered.map((t, index) => (
+            <div 
+              key={index}
+              className="bg-[#0c1830] border border-blue-900/30 rounded-2xl p-6 hover:border-blue-700/40 transition-all group"
+            >
+              <div className="flex items-start gap-4">
+                {/* Avatar */}
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/30">
+                  <span className="text-white font-bold text-sm">{t.avatar}</span>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="flex text-yellow-400">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-3.5 w-3.5 fill-yellow-400" />
+                      ))}
+                    </div>
+                    <span className="text-xs text-slate-600 ml-auto">{t.timestamp}</span>
+                  </div>
+                  
+                  <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                    <Quote className="h-4 w-4 text-blue-500/70 float-left mr-2 -mt-1" />
+                    {t.text}
+                  </p>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-white text-sm">{t.name}</span>
+                    <span className="text-slate-600 text-xs">· {t.role}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {filtered.length === 0 && (
+          <div className="text-center py-12 text-slate-500">
+            <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>No testimonials yet for this pack</p>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+export const packs: PromptPack[] = [
   {
     id: 'viral-video-pack',
     title: 'Viral Short-Form Video Pack',
@@ -162,8 +451,22 @@ const packs: PromptPack[] = [
 const PromptStore = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [loadingPack, setLoadingPack] = useState<string | null>(null)
+  const [previewModal, setPreviewModal] = useState<{open: boolean, packId: string, packTitle: string}>({
+    open: false,
+    packId: '',
+    packTitle: ''
+  })
+  const [emailModal, setEmailModal] = useState(false)
 
   const categories = ['All', 'Video', 'Advertising', 'Strategy', 'Visuals', 'Copywriting', 'Bundle']
+
+  // Show email modal after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setEmailModal(true)
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const filtered =
     selectedCategory === 'All'
@@ -211,6 +514,31 @@ const PromptStore = () => {
 
   return (
     <div className='min-h-screen bg-[#08101f] text-white'>
+      {/* Preview Modal */}
+      <PreviewModal
+        isOpen={previewModal.open}
+        onClose={() => setPreviewModal({ open: false, packId: '', packTitle: '' })}
+        packId={previewModal.packId}
+        packTitle={previewModal.packTitle}
+      />
+      
+      {/* Email Capture Modal */}
+      <EmailCapture
+        isOpen={emailModal}
+        onClose={() => setEmailModal(false)}
+        title="Get 10 FREE Premium Prompts"
+        subtitle="Join 1,000+ creators getting exclusive AI prompts every week"
+        incentive="Instant Download - No Credit Card Needed"
+      />
+      
+      {/* Sticky Mobile CTA */}
+      <StickyCTA
+        onCTAClick={() => handlePurchase(packs.find(p => p.id === 'ultimate-bundle')!)}
+        price={10.99}
+        originalPrice={74.99}
+        savingText="Save $64"
+      />
+      
       <Navigation />
 
       {/* Hero */}
@@ -351,13 +679,41 @@ const PromptStore = () => {
                     ))}
                   </ul>
 
-                  {/* Stars */}
-                  <div className='flex items-center gap-1 mb-5'>
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className='h-4 w-4 text-yellow-400 fill-yellow-400' />
-                    ))}
-                    <span className='text-slate-600 text-xs ml-1'>(4.9)</span>
+                  {/* Stars & Preview */}
+                  <div className='flex items-center justify-between mb-5'>
+                    <div className='flex items-center gap-1'>
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className='h-4 w-4 text-yellow-400 fill-yellow-400' />
+                      ))}
+                      <span className='text-slate-600 text-xs ml-1'>(4.9)</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPreviewModal({ open: true, packId: pack.id, packTitle: pack.title })}
+                      className='border-blue-700/50 text-blue-300 hover:bg-blue-900/20 hover:text-blue-100 text-xs h-7 px-2 rounded-lg transition-colors'
+                    >
+                      <Eye className='h-3 w-3 mr-1' />
+                      Preview
+                    </Button>
                   </div>
+
+                  {/* Countdown for bundle */}
+                  {pack.id === 'ultimate-bundle' && (
+                    <div className='mb-4'>
+                      <CountdownTimer hours={48} />
+                    </div>
+                  )}
+
+                  {/* Savings badge */}
+                  {pack.originalPrice && (
+                    <div className='mb-4'>
+                      <Badge className='bg-green-600/20 text-green-300 border border-green-600/30 text-xs font-semibold py-1'>
+                        <Tag className='h-3 w-3 mr-1' />
+                        Save ${(pack.originalPrice - pack.price).toFixed(2)} - {Math.round(((pack.originalPrice - pack.price) / pack.originalPrice) * 100)}% OFF
+                      </Badge>
+                    </div>
+                  )}
 
                   {/* Price & CTAs */}
                   <div className='flex flex-col mt-auto'>
@@ -416,6 +772,9 @@ const PromptStore = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+      
       {/* Trust Section */}
       <section className='py-16 border-t border-blue-900/20 bg-[#09121f]'>
         <div className='max-w-5xl mx-auto px-4 sm:px-6 lg:px-8'>
@@ -444,33 +803,72 @@ const PromptStore = () => {
       </section>
 
       {/* Footer CTA */}
-      <section className='py-24 bg-gradient-to-b from-[#08101f] to-[#060d18] border-t border-blue-900/20'>
-        <div className='max-w-2xl mx-auto px-4 text-center'>
-          <p className='text-xs font-bold tracking-widest text-blue-400 uppercase mb-4'>Best Value</p>
+      <section className='py-24 bg-gradient-to-b from-[#08101f] to-[#060d18] border-t border-blue-900/20 relative overflow-hidden'>
+        {/* Background glow */}
+        <div className='absolute inset-0 pointer-events-none'>
+          <div className='absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-700/10 rounded-full blur-3xl' />
+        </div>
+        
+        <div className='relative z-10 max-w-2xl mx-auto px-4 text-center'>
+          <p className='text-xs font-bold tracking-widest text-blue-400 uppercase mb-4'>
+            🔥limited time offer
+          </p>
           <h2 className='text-3xl font-bold mb-4 text-white'>
             Not sure which pack to start with?
           </h2>
-          <p className='text-slate-400 mb-8'>
-            The Ultimate Bundle gives you everything at 60% off. 855+ prompts, one price.
+          <p className='text-slate-400 mb-6'>
+            The Ultimate Bundle gives you <span className="text-white font-semibold">ALL 5 packs</span> (855+ prompts) 
+            at <span className="text-green-400 font-bold">80% OFF</span> the individual price!
           </p>
-          <div className='flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto'>
+          
+          <div className='flex items-center justify-center gap-4 mb-8'>
+            <CountdownTimer hours={48} />
+            <Badge className='bg-green-600/20 text-green-300 border border-green-600/30 text-sm font-semibold py-1.5 px-3'>
+              <Tag className='h-3.5 w-3.5 mr-1' />
+              Save $64
+            </Badge>
+          </div>
+          
+          <div className='flex flex-wrap justify-center gap-2 mb-8 text-sm'>
+            {packs.filter(p => p.id !== 'ultimate-bundle').map(p => (
+              <span 
+                key={p.id} 
+                className='bg-[#0c1830] border border-blue-800/50 rounded-lg px-3 py-1 text-blue-300 text-xs'
+              >
+                ✓ {p.title}
+              </span>
+            ))}
+          </div>
+          <div className='flex flex-col sm:flex-row gap-3 justify-center max-w-2xl mx-auto'>
+            <Button
+              onClick={() => setPreviewModal({ open: true, packId: 'ultimate-bundle', packTitle: 'Ultimate Creator Bundle' })}
+              size='lg'
+              variant="outline"
+              className='flex-1 border-blue-700/50 text-blue-300 hover:bg-blue-900/20 hover:text-blue-100 font-bold text-base py-6 rounded-xl shadow-xl transition-all duration-200 hover:-translate-y-px disabled:opacity-70 hover:border-blue-500/60'
+            >
+              <Eye className='mr-2 h-5 w-5' />
+              Preview All 855+ Prompts
+            </Button>
+          </div>
+          
+          <div className='flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto mt-4'>
             <Button
               onClick={() => handlePurchase(packs.find((p) => p.id === 'ultimate-bundle')!)}
               disabled={loadingPack === 'ultimate-bundle'}
               size='lg'
-              className='flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-base py-6 rounded-xl shadow-xl shadow-blue-900/40 transition-all duration-200 hover:-translate-y-px disabled:opacity-70'
+              className='flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white font-bold text-base py-6 rounded-xl shadow-xl shadow-blue-900/40 transition-all duration-200 hover:-translate-y-px hover:shadow-blue-500/30 disabled:opacity-70 border-0'
             >
               {loadingPack === 'ultimate-bundle' ? (
                 <><Loader2 className='mr-2 h-5 w-5 animate-spin' />Processing…</>
               ) : (
-                <><ShoppingCart className='mr-2 h-5 w-5' />Stripe — $10.99</>
+                <><ShoppingCart className='mr-2 h-5 w-5' />Get Instant Access — $10.99</>
               )}
             </Button>
             <Button
               onClick={() => handlePurchase(packs.find((p) => p.id === 'ultimate-bundle')!)}
               disabled={loadingPack === 'ultimate-bundle'}
               size='lg'
-              className='flex-1 bg-[#0070ba] hover:bg-[#005ea6] text-white font-bold text-base py-6 rounded-xl shadow-xl transition-all duration-200 hover:-translate-y-px disabled:opacity-70'
+              className='flex-1 bg-gradient-to-r from-cyan-600 to-blue-700 hover:opacity-90 text-white font-bold text-base py-6 rounded-xl shadow-xl shadow-cyan-900/40 transition-all duration-200 hover:-translate-y-px disabled:opacity-70 border-0'
             >
               {loadingPack === 'ultimate-bundle' ? (
                 <><Loader2 className='mr-2 h-5 w-5 animate-spin' />Processing…</>
@@ -479,7 +877,10 @@ const PromptStore = () => {
               )}
             </Button>
           </div>
-          <p className='text-slate-700 text-sm mt-6'>30-day money-back guarantee · Secure checkout</p>
+          <p className='text-slate-600 text-sm mt-6'>
+            <CheckCircle className="h-3.5 w-3.5 text-green-400 inline mr-1" />
+            30-day money-back guarantee · Secure checkout · Instant download
+          </p>
         </div>
       </section>
     </div>

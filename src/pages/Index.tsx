@@ -1,11 +1,13 @@
 
+import { useState, useEffect } from 'react'
 import Navigation from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import {
   FileText, Download, Zap, ShoppingCart,
-  CheckCircle, ArrowRight, Shield, RefreshCcw, Users,
+  CheckCircle, ArrowRight, Shield, RefreshCcw, Users, X,
 } from 'lucide-react';
+import EmailCapture from '@/components/EmailCapture';
 
 const features = [
   { icon: '⚡', label: 'Instant Download', desc: 'Get your ZIP file the moment you purchase — no waiting.' },
@@ -23,8 +25,27 @@ const volumes = [
 ];
 
 const Index = () => {
+  const [emailModal, setEmailModal] = useState(false)
+
+  // Show email modal after 8 seconds on homepage
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setEmailModal(true)
+    }, 8000)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#08101f] text-white overflow-x-hidden">
+      {/* Email Capture Modal */}
+      <EmailCapture
+        isOpen={emailModal}
+        onClose={() => setEmailModal(false)}
+        title="Get 10 FREE Premium Prompts"
+        subtitle="Join 1,000+ creators getting exclusive AI prompts every week"
+        incentive="Instant Download - No Credit Card Needed"
+      />
+      
       <Navigation />
 
       {/* ── Hero ── */}
