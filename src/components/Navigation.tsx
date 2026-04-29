@@ -10,14 +10,14 @@ const Navigation = () => {
   const location = useLocation();
 
   const promptLibraryItems = [
-    { name: '⚡ Prompt Generator',  path: '/prompt-generator',           external: false },
-    { name: 'Prompt Store',         path: '/prompt-store',               external: false },
-    { name: 'Prompts (Vol. 1)',     path: '/prompt-library.html',        external: true },
-    { name: 'Prompts (Vol. 2)',     path: '/prompt-library-2.html',      external: true },
-    { name: 'Ideas Pack 1',        path: '/ideas-prompt-library.html',   external: true },
-    { name: 'Ideas Pack 2',        path: '/ideas-prompt-library-1.html', external: true },
-    { name: 'Ideas Pack 3',        path: '/ideas-prompt-library-2.html', external: true },
-    { name: 'Ideas Pack 4',        path: '/ideas-prompt-library-3.html', external: true },
+    { name: '⚡ Prompt Generator', path: '/prompt-generator', external: false },
+    { name: 'Prompt Store', path: '/prompt-store', external: false },
+    { name: 'Creator Prompt Starter Library', path: '/prompt-library.html', external: true },
+    { name: 'Advanced Creator Prompt Library', path: '/prompt-library-2.html', external: true },
+    { name: 'Content Ideas Starter Pack', path: '/ideas-prompt-library.html', external: true },
+    { name: 'Viral Content Ideas Pack', path: '/ideas-prompt-library-1.html', external: true },
+    { name: 'Audience Growth Ideas Pack', path: '/ideas-prompt-library-2.html', external: true },
+    { name: 'Monetisation Ideas Pack', path: '/ideas-prompt-library-3.html', external: true },
   ];
 
   const isActive = (path: string) => location.pathname === path;

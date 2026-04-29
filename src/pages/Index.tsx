@@ -16,22 +16,22 @@ const features = [
 ];
 
 const volumes = [
-  { label: 'Prompts Vol. 1', href: '/prompt-library.html' },
-  { label: 'Prompts Vol. 2', href: '/prompt-library-2.html' },
-  { label: 'Ideas Pack 1',   href: '/ideas-prompt-library.html' },
-  { label: 'Ideas Pack 2',   href: '/ideas-prompt-library-1.html' },
-  { label: 'Ideas Pack 3',   href: '/ideas-prompt-library-2.html' },
-  { label: 'Ideas Pack 4',   href: '/ideas-prompt-library-3.html' },
+  { label: 'Creator Prompt Starter Library', href: '/prompt-library.html' },
+  { label: 'Advanced Creator Prompt Library', href: '/prompt-library-2.html' },
+  { label: 'Content Ideas Starter Pack', href: '/ideas-prompt-library.html' },
+  { label: 'Viral Content Ideas Pack', href: '/ideas-prompt-library-1.html' },
+  { label: 'Audience Growth Ideas Pack', href: '/ideas-prompt-library-2.html' },
+  { label: 'Monetisation Ideas Pack', href: '/ideas-prompt-library-3.html' },
 ];
 
 const Index = () => {
   const [emailModal, setEmailModal] = useState(false)
 
-  // Show email modal after 8 seconds on homepage
+  // Show email modal after the visitor has had time to understand the offer
   useEffect(() => {
     const timer = setTimeout(() => {
       setEmailModal(true)
-    }, 8000)
+    }, 14000)
     return () => clearTimeout(timer)
   }, [])
 
@@ -41,9 +41,9 @@ const Index = () => {
       <EmailCapture
         isOpen={emailModal}
         onClose={() => setEmailModal(false)}
-        title="Get 10 FREE Premium Prompts"
-        subtitle="Join 1,000+ creators getting exclusive AI prompts every week"
-        incentive="Instant Download - No Credit Card Needed"
+        title="Get 10 Free High-Performing Prompts"
+        subtitle="Try our prompt style before you buy — instant download, no credit card needed"
+        incentive="FREE STARTER PACK · INSTANT DOWNLOAD"
       />
       
       <Navigation />
@@ -61,22 +61,21 @@ const Index = () => {
           {/* Pill badge */}
           <div className="inline-flex items-center gap-2 bg-blue-600/10 border border-blue-500/25 rounded-full px-4 py-1.5 text-xs font-semibold text-blue-300 mb-8 tracking-wider uppercase animate-fade-in">
             <Zap className="h-3 w-3 text-blue-400" />
-            AI Prompts & PDF Guides — Instant Download
+            AI prompts, PDF guides & instant-download creator tools
           </div>
 
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6 animate-slide-up">
-            The Professional{' '}
+            Ready-to-use AI prompts that help you{' '}
             <span className="relative">
               <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                AI Prompt
+                create faster
               </span>
             </span>
-            {' '}Hub
+            , post smarter, and sell more.
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in delay-200">
-            Professionally curated prompt packs and PDF guides for content creators, marketers, and businesses.
-            Download instantly. Deploy immediately.
+          <p className="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed animate-fade-in delay-200">
+            Instant-download prompt packs and PDF libraries for creators, marketers, and small businesses. Start with free samples, grab focused low-cost packs, or unlock the full bundle when you want the whole system.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-in delay-400">
@@ -115,6 +114,28 @@ const Index = () => {
               </span>
             ))}
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10 text-left animate-fade-in delay-700">
+            {[
+              {
+                title: '1. Start free',
+                desc: 'Browse the free prompt libraries and test the quality before spending anything.',
+              },
+              {
+                title: '2. Buy focused packs',
+                desc: 'Pick a cheap prompt pack built for a specific outcome like hooks, ads, visuals, or strategy.',
+              },
+              {
+                title: '3. Upgrade when ready',
+                desc: 'Unlock the full bundle when you want the fastest, cheapest path to everything.',
+              },
+            ].map(({ title, desc }) => (
+              <div key={title} className="rounded-2xl border border-blue-900/30 bg-[#0c1830]/70 p-5 backdrop-blur-sm">
+                <p className="text-sm font-semibold text-white mb-2">{title}</p>
+                <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -124,13 +145,13 @@ const Index = () => {
           <div className="text-center mb-16">
             <p className="text-xs font-bold tracking-widest text-blue-400 uppercase mb-3">What We Do</p>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              Two products.{' '}
+              Free samples for trust.{' '}
               <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                Both exceptional.
+                Paid packs for results.
               </span>
             </h2>
-            <p className="text-slate-400 text-lg mt-4 max-w-xl mx-auto">
-              We don't spread thin. We obsess over doing prompts and PDFs better than anyone else.
+            <p className="text-slate-400 text-lg mt-4 max-w-2xl mx-auto">
+              The model is simple: try the free libraries, buy the focused packs that solve a real problem, then upgrade to the full bundle if you want maximum value.
             </p>
           </div>
 
@@ -143,17 +164,16 @@ const Index = () => {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600/15 border border-blue-500/20 mb-6">
                   <Zap className="h-6 w-6 text-blue-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">AI Prompt Packs</h3>
+                <h3 className="text-2xl font-bold text-white mb-2">Low-Cost Prompt Packs</h3>
                 <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                  Battle-tested prompt bundles for TikTok hooks, ad copy, content strategy, image generation, and more.
-                  Delivered as ZIP files — load up and start creating.
+                  Focused, outcome-driven prompt bundles for viral hooks, ad copy, content planning, image generation, and more. Buy what you need now, download instantly, and put it to work today.
                 </p>
                 <ul className="space-y-2 mb-8">
                   {[
-                    '120–300 prompts per category',
+                    'Focused packs priced for impulse buys',
                     'Video, ads, captions, visuals & strategy',
-                    'Ultimate Bundle — 855+ prompts at 60% off',
-                    'Pay via Stripe or PayPal',
+                    'Upgrade to the Ultimate Bundle for best value',
+                    'Pay securely via Stripe or PayPal',
                   ].map(f => (
                     <li key={f} className="flex items-start gap-2.5 text-sm text-slate-400">
                       <CheckCircle className="h-4 w-4 text-blue-400 flex-shrink-0 mt-0.5" />
@@ -164,7 +184,7 @@ const Index = () => {
                 <Link to="/prompt-store">
                   <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl h-11 transition-all duration-200 hover:-translate-y-px">
                     <ShoppingCart className="mr-2 h-4 w-4" />
-                    Shop Prompt Packs
+                    Shop Low-Cost Packs
                   </Button>
                 </Link>
               </div>
@@ -177,17 +197,16 @@ const Index = () => {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-cyan-600/15 border border-cyan-500/20 mb-6">
                   <FileText className="h-6 w-6 text-cyan-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">PDF Prompt Libraries</h3>
+                <h3 className="text-2xl font-bold text-white mb-2">Free PDF Prompt Libraries</h3>
                 <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                  Browse our structured PDF libraries — organised by category, niche, and use-case.
-                  Free volumes to get started, premium packs for power users.
+                  Browse structured PDF libraries organised by niche, goal, and use-case. They are built to prove the quality first, so buying the premium packs feels like the obvious next move.
                 </p>
                 <ul className="space-y-2 mb-8">
                   {[
-                    'Multiple volumes & editions',
+                    'Free samples visitors can browse right now',
                     'Sorted by niche, topic & goal',
-                    'Free libraries available now',
-                    'Premium packs for power users',
+                    'Built to reduce risk before purchase',
+                    'Natural upsell path into premium packs',
                   ].map(f => (
                     <li key={f} className="flex items-start gap-2.5 text-sm text-slate-400">
                       <CheckCircle className="h-4 w-4 text-cyan-400 flex-shrink-0 mt-0.5" />
@@ -213,13 +232,13 @@ const Index = () => {
           <div className="text-center mb-10">
             <p className="text-xs font-bold tracking-widest text-blue-400 uppercase mb-3">Free Access</p>
             <h2 className="text-3xl font-bold">
-              Explore Our{' '}
+              Start with the{' '}
               <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                Prompt Libraries
+                free libraries
               </span>
             </h2>
-            <p className="text-slate-500 mt-3 text-sm max-w-md mx-auto">
-              All free to browse. Upgrade to download full packs with hundreds more.
+            <p className="text-slate-500 mt-3 text-sm max-w-xl mx-auto">
+              Browse free samples first. If the style fits your workflow, move up to the paid packs and bundle for deeper, more targeted prompt systems.
             </p>
           </div>
 
@@ -236,6 +255,39 @@ const Index = () => {
                 </span>
               </a>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Support / donation block ── */}
+      <section className="py-16 bg-[#08101f] border-t border-blue-900/20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-blue-900/30 bg-gradient-to-br from-[#0c1830] to-[#09121f] p-8 md:p-10 text-center shadow-2xl shadow-blue-900/20">
+            <p className="text-xs font-bold tracking-widest text-blue-400 uppercase mb-3">Support the free library</p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              If the free prompts helped, you can{' '}
+              <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                support the project
+              </span>
+              .
+            </h2>
+            <p className="text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
+              Donations help keep the free prompt libraries live, fund new releases, and let us keep publishing useful creator tools for people who are not ready to buy yet.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link to="/prompt-store">
+                <Button className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-6 rounded-xl">
+                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  Shop Premium Packs
+                </Button>
+              </Link>
+              <a href="#donate">
+                <Button variant="outline" className="border-slate-700 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 hover:bg-blue-900/10 px-8 py-6 rounded-xl">
+                  Support with a Donation
+                </Button>
+              </a>
+            </div>
+            <p className="text-slate-600 text-sm mt-5">Best used after visitors have seen value — support the free library without competing with product sales.</p>
           </div>
         </div>
       </section>
