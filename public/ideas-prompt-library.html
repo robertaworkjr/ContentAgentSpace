@@ -379,6 +379,8 @@
     .card.featured { grid-column: span 1; }
     .card.featured .card-prompt { columns: 1; }
     .logo { font-size: 48px; }
+    .library-upsell { margin: 0 24px 28px; padding: 24px; grid-template-columns: 1fr; gap: 18px; }
+    .library-upsell-copy h2 { font-size: 32px; }
   }
   .donation-dock {
     position: fixed;
@@ -523,6 +525,75 @@
   @media (max-width: 600px) {
     .kofi-inline-banner { padding: 12px 16px; flex-wrap: wrap; }
   }
+
+  .library-upsell {
+    margin: 0 60px 36px;
+    padding: 28px 30px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(17,17,24,0.96), rgba(12,12,18,0.96));
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  .library-upsell-copy small {
+    display: inline-block;
+    color: var(--accent-a);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+  .library-upsell-copy h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    line-height: 0.95;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .library-upsell-copy p {
+    color: rgba(232,228,220,0.75);
+    line-height: 1.7;
+    max-width: 720px;
+  }
+  .library-upsell-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .library-upsell-actions a {
+    text-decoration: none;
+  }
+  .upsell-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-a);
+    color: var(--black);
+    background: var(--accent-a);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 30px rgba(200,255,71,0.16);
+  }
+  .upsell-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(200,255,71,0.24);
+  }
+  .upsell-note {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    max-width: 320px;
+  }
+
 </style>
 </head>
 <body>
@@ -539,6 +610,19 @@
     <p style="margin-top:8px;color:var(--accent-a)">20 Prompts · 6 Categories</p>
   </div>
 </header>
+
+<section class="library-upsell">
+  <div class="library-upsell-copy">
+    <small>Free library · content ideas starter pack</small>
+    <h2>Free ideas now. Better systems when you are ready to buy.</h2>
+    <p>Use this free ideas library to break the blank-page problem. When you want more targeted prompts and faster execution, the low-cost packs are built for that.</p>
+  </div>
+  <div class="library-upsell-actions">
+    <a href="/prompt-store" class="upsell-btn">Unlock the paid packs →</a>
+    <p class="upsell-note">Free samples get you moving. Paid packs help you move faster and more consistently.</p>
+  </div>
+</section>
+
 
 <!-- Inline Ko-fi Support Banner -->
 <div class="kofi-inline-banner">
@@ -1467,6 +1551,75 @@ renderCards();
     transition: color 0.2s;
   }
   #kofi-nudge-bar .nudge-dismiss:hover { color: var(--text); }
+
+  .library-upsell {
+    margin: 0 60px 36px;
+    padding: 28px 30px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(17,17,24,0.96), rgba(12,12,18,0.96));
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  .library-upsell-copy small {
+    display: inline-block;
+    color: var(--accent-a);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+  .library-upsell-copy h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    line-height: 0.95;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .library-upsell-copy p {
+    color: rgba(232,228,220,0.75);
+    line-height: 1.7;
+    max-width: 720px;
+  }
+  .library-upsell-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .library-upsell-actions a {
+    text-decoration: none;
+  }
+  .upsell-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-a);
+    color: var(--black);
+    background: var(--accent-a);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 30px rgba(200,255,71,0.16);
+  }
+  .upsell-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(200,255,71,0.24);
+  }
+  .upsell-note {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    max-width: 320px;
+  }
+
 </style>
 <div id="kofi-nudge-bar">
   <span class="nudge-text">These prompts are free — if they're useful, buy us a coffee ☕</span>

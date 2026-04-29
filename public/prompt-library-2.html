@@ -379,6 +379,8 @@
     .card.featured { grid-column: span 1; }
     .card.featured .card-prompt { columns: 1; }
     .logo { font-size: 48px; }
+    .library-upsell { margin: 0 24px 28px; padding: 24px; grid-template-columns: 1fr; gap: 18px; }
+    .library-upsell-copy h2 { font-size: 32px; }
   }
   .donation-dock {
     position: fixed;
@@ -414,6 +416,75 @@
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(200, 255, 71, 0.5);
   }
+
+  .library-upsell {
+    margin: 0 60px 36px;
+    padding: 28px 30px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(17,17,24,0.96), rgba(12,12,18,0.96));
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  .library-upsell-copy small {
+    display: inline-block;
+    color: var(--accent-a);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+  .library-upsell-copy h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    line-height: 0.95;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .library-upsell-copy p {
+    color: rgba(232,228,220,0.75);
+    line-height: 1.7;
+    max-width: 720px;
+  }
+  .library-upsell-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .library-upsell-actions a {
+    text-decoration: none;
+  }
+  .upsell-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-a);
+    color: var(--black);
+    background: var(--accent-a);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 30px rgba(200,255,71,0.16);
+  }
+  .upsell-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(200,255,71,0.24);
+  }
+  .upsell-note {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    max-width: 320px;
+  }
+
 </style>
 </head>
 <body>
@@ -430,6 +501,19 @@
     <p style="margin-top:8px;color:var(--accent-a)">20 Prompts · 5 Categories</p>
   </div>
 </header>
+
+<section class="library-upsell">
+  <div class="library-upsell-copy">
+    <small>Free library · advanced creator prompts</small>
+    <h2>A stronger free sample for creators who want more range.</h2>
+    <p>These prompts are free to browse so you can test the style before you spend anything. When you want more prompts organised around outcomes, the paid store is the next step.</p>
+  </div>
+  <div class="library-upsell-actions">
+    <a href="/prompt-store" class="upsell-btn">See the paid prompt store →</a>
+    <p class="upsell-note">Move from free browsing to focused packs for hooks, visuals, captions, ads, and strategy.</p>
+  </div>
+</section>
+
 
 <div class="filters">
   <span class="filter-label">Filter ↗</span>

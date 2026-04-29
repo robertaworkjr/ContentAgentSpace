@@ -325,9 +325,9 @@ const TestimonialsSection = () => {
 export const packs: PromptPack[] = [
   {
     id: 'viral-video-pack',
-    title: 'Viral Short-Form Video Pack',
+    title: '120 Viral Hook Prompts for TikTok, Reels & Shorts',
     description:
-      'Battle-tested prompts for TikTok, Reels & YouTube Shorts. Hook your audience in the first 3 seconds every time.',
+      'A low-cost starter pack for creators who need stronger openings, sharper hooks, and faster short-form video ideas without guessing what to post.',
     price: 4.99,
     originalPrice: 14.99,
     promptCount: 120,
@@ -336,60 +336,60 @@ export const packs: PromptPack[] = [
     tags: ['TikTok', 'Reels', 'Shorts', 'Hooks'],
     popular: true,
     features: [
-      '120 curated video prompts',
-      'Hook formulas that convert',
-      'Platform-specific variations',
-      'Trending content formulas',
-      'Lifetime access + updates',
+      '120 ready-to-use hook and script prompts',
+      'Built for TikTok, Reels, and Shorts',
+      'Stronger first-3-second attention grabs',
+      'Fast content idea generation without burnout',
+      'Lifetime access + free updates',
     ],
     color: 'from-purple-600 to-pink-600',
   },
   {
     id: 'ad-copy-pack',
-    title: 'AI Ad Copy Mastery Pack',
+    title: '85 AI Ad Copy Prompts for Better Conversions',
     description:
-      'High-converting ad scripts and copy prompts for Facebook, Instagram, and YouTube ad campaigns.',
+      'A focused swipe-file style pack for faster Facebook, Instagram, and YouTube ads when you need clearer angles, offers, and calls to action.',
     price: 3.99,
     originalPrice: 17.99,
     promptCount: 85,
     category: 'Advertising',
     icon: <Megaphone className='h-6 w-6' />,
-    tags: ['Facebook Ads', 'Google Ads', 'Copywriting'],
+    tags: ['Facebook Ads', 'Instagram Ads', 'Copywriting'],
     new: true,
     features: [
-      '85 ad copy prompts',
-      'Pain-point targeting frameworks',
-      'AIDA & PAS models included',
-      'A/B test ready variations',
-      'Lifetime access + updates',
+      '85 ad copy and offer prompts',
+      'Pain-point and desire-driven frameworks',
+      'AIDA and PAS structures included',
+      'Built for quick testing and iteration',
+      'Lifetime access + free updates',
     ],
     color: 'from-pink-600 to-orange-500',
   },
   {
     id: 'content-strategy-pack',
-    title: 'Content Strategy Mega Pack',
+    title: '200 Content Strategy Prompts for 30 Days of Posts',
     description:
-      'A complete content calendar and strategy prompt system. Plan 30 days of content in under an hour.',
+      'A planning pack for creators and small teams who want a month of content direction, stronger positioning, and less time wasted wondering what comes next.',
     price: 7.99,
     originalPrice: 19.99,
     promptCount: 200,
     category: 'Strategy',
     icon: <TrendingUp className='h-6 w-6' />,
-    tags: ['Planning', 'Calendar', 'Strategy', 'Branding'],
+    tags: ['Planning', 'Content Calendar', 'Strategy', 'Branding'],
     features: [
-      '200+ strategy prompts',
-      '30-day content calendar',
-      'Niche-specific templates',
-      'Brand voice builder prompts',
-      'Lifetime access + updates',
+      '200 strategy and planning prompts',
+      'Build 30 days of content faster',
+      'Niche-specific planning angles',
+      'Brand voice and positioning helpers',
+      'Lifetime access + free updates',
     ],
     color: 'from-blue-600 to-purple-600',
   },
   {
     id: 'ai-image-pack',
-    title: 'AI Image & Visual Prompts',
+    title: '150 AI Image Prompts for Scroll-Stopping Visuals',
     description:
-      'Midjourney, DALL·E & Stable Diffusion prompts engineered for social media-ready visuals that stop the scroll.',
+      'A visual prompt pack for creators who need better thumbnails, social graphics, and branded AI images that look deliberate instead of random.',
     price: 5.99,
     originalPrice: 14.99,
     promptCount: 150,
@@ -397,19 +397,19 @@ export const packs: PromptPack[] = [
     icon: <Sparkles className='h-6 w-6' />,
     tags: ['Midjourney', 'DALL·E', 'Stable Diffusion'],
     features: [
-      '150 image generation prompts',
-      'Style-locked consistency guides',
-      'Brand aesthetic templates',
-      'Platform size variations',
-      'Lifetime access + updates',
+      '150 image-generation prompts',
+      'Cleaner style and consistency guidance',
+      'Brand aesthetic and visual direction help',
+      'Useful for social posts, covers, and promos',
+      'Lifetime access + free updates',
     ],
     color: 'from-teal-500 to-blue-600',
   },
   {
     id: 'viral-captions-pack',
-    title: 'Viral Captions & Hooks Pack',
+    title: '300 Caption, Hook & CTA Prompts for Engagement',
     description:
-      'Never stare at a blank caption box again. Hundreds of proven caption structures and opening hooks.',
+      'A practical writing pack for when you need captions, openings, and calls to action that feel stronger than generic filler and actually move people to respond.',
     price: 6.99,
     originalPrice: 17.99,
     promptCount: 300,
@@ -417,32 +417,32 @@ export const packs: PromptPack[] = [
     icon: <Zap className='h-6 w-6' />,
     tags: ['Captions', 'Hooks', 'Engagement', 'CTAs'],
     features: [
-      '300 caption prompts',
-      'Engagement-trigger formulas',
-      'Emoji placement guides',
-      'CTA script library',
-      'Lifetime access + updates',
+      '300 caption and CTA prompts',
+      'Engagement-focused opening formulas',
+      'Useful for social posts and launch content',
+      'Designed to reduce blank-page syndrome fast',
+      'Lifetime access + free updates',
     ],
     color: 'from-yellow-500 to-orange-600',
   },
   {
     id: 'ultimate-bundle',
-    title: 'Ultimate Creator Bundle',
+    title: 'Ultimate Creator Bundle — All 855+ Prompts',
     description:
-      'Every single prompt pack in one mega zip. The complete AI content creation arsenal for serious creators.',
+      'The best-value option: every pack in one download for creators, marketers, and businesses who want the full system instead of buying one piece at a time.',
     price: 10.99,
     originalPrice: 74.99,
     promptCount: 855,
     category: 'Bundle',
     icon: <Package className='h-6 w-6' />,
-    tags: ['All Packs', 'Best Value', 'Everything'],
+    tags: ['All Packs', 'Best Value', 'Full Library'],
     popular: true,
     features: [
       'All 5 packs included (855+ prompts)',
-      'Exclusive bundle-only bonus prompts',
-      'Priority Discord community access',
-      'Quarterly update drops',
-      'Lifetime access + all future packs',
+      'Cheaper than buying packs individually',
+      'Best choice for creators who want everything',
+      'Bonus prompts included in the bundle',
+      'Lifetime access + all future updates',
     ],
     color: 'from-purple-600 via-pink-600 to-orange-500',
   },
@@ -460,11 +460,11 @@ const PromptStore = () => {
 
   const categories = ['All', 'Video', 'Advertising', 'Strategy', 'Visuals', 'Copywriting', 'Bundle']
 
-  // Show email modal after 5 seconds
+  // Show email modal after the visitor has seen the offer first
   useEffect(() => {
     const timer = setTimeout(() => {
       setEmailModal(true)
-    }, 5000)
+    }, 12000)
     return () => clearTimeout(timer)
   }, [])
 
@@ -526,9 +526,9 @@ const PromptStore = () => {
       <EmailCapture
         isOpen={emailModal}
         onClose={() => setEmailModal(false)}
-        title="Get 10 FREE Premium Prompts"
-        subtitle="Join 1,000+ creators getting exclusive AI prompts every week"
-        incentive="Instant Download - No Credit Card Needed"
+        title="Get 10 Free High-Performing Prompts"
+        subtitle="Try the quality first — instant download, no credit card needed"
+        incentive="FREE STARTER PACK · INSTANT DOWNLOAD"
       />
       
       {/* Sticky Mobile CTA */}
@@ -549,17 +549,17 @@ const PromptStore = () => {
         </div>
         <div className='relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
           <Badge className='mb-4 bg-blue-900/50 text-blue-300 border border-blue-700/50 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase'>
-            ⚡ Instant Download · ZIP Files
+            ⚡ Low-cost prompt packs · instant download
           </Badge>
           <h1 className='text-5xl md:text-7xl font-extrabold mb-6 tracking-tight'>
-            AI Prompt{' '}
+            Buy the exact prompt pack you need — or grab{' '}
             <span className='bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent'>
-              Store
+              everything
             </span>
+            .
           </h1>
-          <p className='text-xl text-slate-400 max-w-2xl mx-auto mb-8'>
-            Professionally curated AI prompt packs for content creators and marketers.
-            Download instantly. Deploy immediately.
+          <p className='text-xl text-slate-400 max-w-3xl mx-auto mb-8'>
+            Start with a cheap focused pack for hooks, ads, visuals, strategy, or captions. If you already know you want the full library, the bundle gives you the best value in one click.
           </p>
           <div className='flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500'>
             <span className='flex items-center gap-2'>
@@ -657,6 +657,18 @@ const PromptStore = () => {
                     </span>
                   </div>
 
+                  <div className='mb-4 rounded-xl border border-blue-900/30 bg-[#08101f] px-3 py-2'>
+                    <p className='text-xs uppercase tracking-wider text-slate-500 mb-1'>Best for</p>
+                    <p className='text-sm text-slate-300'>
+                      {pack.id === 'viral-video-pack' && 'Creators who need stronger hooks and faster short-form ideas.'}
+                      {pack.id === 'ad-copy-pack' && 'Businesses and marketers who want faster ad testing and sharper offers.'}
+                      {pack.id === 'content-strategy-pack' && 'People planning a month of content without starting from scratch.'}
+                      {pack.id === 'ai-image-pack' && 'Creators making thumbnails, graphics, and branded AI visuals.'}
+                      {pack.id === 'viral-captions-pack' && 'Anyone tired of weak captions, generic hooks, and empty CTA ideas.'}
+                      {pack.id === 'ultimate-bundle' && 'Anyone who wants the full library at the best price instead of buying separately.'}
+                    </p>
+                  </div>
+
                   {/* Tags */}
                   <div className='flex flex-wrap gap-1.5 mb-5'>
                     {pack.tags.map((tag) => (
@@ -685,7 +697,7 @@ const PromptStore = () => {
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className='h-4 w-4 text-yellow-400 fill-yellow-400' />
                       ))}
-                      <span className='text-slate-600 text-xs ml-1'>(4.9)</span>
+                      <span className='text-slate-600 text-xs ml-1'>(4.9/5)</span>
                     </div>
                     <Button
                       variant="outline"
@@ -698,12 +710,6 @@ const PromptStore = () => {
                     </Button>
                   </div>
 
-                  {/* Countdown for bundle */}
-                  {pack.id === 'ultimate-bundle' && (
-                    <div className='mb-4'>
-                      <CountdownTimer hours={48} />
-                    </div>
-                  )}
 
                   {/* Savings badge */}
                   {pack.originalPrice && (
@@ -743,7 +749,7 @@ const PromptStore = () => {
                         ) : (
                           <span className='flex items-center justify-center gap-1 text-xs'>
                             <ShoppingCart className='h-3 w-3 flex-shrink-0' />
-                            <span className='truncate'>Stripe</span>
+                            <span className='truncate'>Buy now</span>
                           </span>
                         )}
                       </Button>
@@ -811,21 +817,19 @@ const PromptStore = () => {
         
         <div className='relative z-10 max-w-2xl mx-auto px-4 text-center'>
           <p className='text-xs font-bold tracking-widest text-blue-400 uppercase mb-4'>
-            🔥limited time offer
+            Best value
           </p>
           <h2 className='text-3xl font-bold mb-4 text-white'>
-            Not sure which pack to start with?
+            Start small or buy the whole system.
           </h2>
           <p className='text-slate-400 mb-6'>
-            The Ultimate Bundle gives you <span className="text-white font-semibold">ALL 5 packs</span> (855+ prompts) 
-            at <span className="text-green-400 font-bold">80% OFF</span> the individual price!
+            The Ultimate Bundle gives you <span className="text-white font-semibold">all 5 packs</span> in one download, so if you already know you will use hooks, ads, visuals, captions, and strategy prompts, this is the cheapest path.
           </p>
           
           <div className='flex items-center justify-center gap-4 mb-8'>
-            <CountdownTimer hours={48} />
             <Badge className='bg-green-600/20 text-green-300 border border-green-600/30 text-sm font-semibold py-1.5 px-3'>
               <Tag className='h-3.5 w-3.5 mr-1' />
-              Save $64
+              Save $64 vs buying separately
             </Badge>
           </div>
           
@@ -861,7 +865,7 @@ const PromptStore = () => {
               {loadingPack === 'ultimate-bundle' ? (
                 <><Loader2 className='mr-2 h-5 w-5 animate-spin' />Processing…</>
               ) : (
-                <><ShoppingCart className='mr-2 h-5 w-5' />Get Instant Access — $10.99</>
+                <><ShoppingCart className='mr-2 h-5 w-5' />Get The Full Bundle — $10.99</>
               )}
             </Button>
             <Button
